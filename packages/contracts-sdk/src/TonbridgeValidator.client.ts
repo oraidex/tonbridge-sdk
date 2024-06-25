@@ -151,12 +151,10 @@ export interface TonbridgeValidatorInterface extends TonbridgeValidatorReadOnlyI
     vdata: VdataHex[];
   }, _fee?: number | StdFee | "auto", _memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   verifyMasterchainBlockByValidatorSignatures: ({
-    blockBoc,
     blockHeaderProof,
     fileHash,
     vdata
   }: {
-    blockBoc: HexBinary;
     blockHeaderProof: HexBinary;
     fileHash: HexBinary;
     vdata: VdataHex[];
@@ -234,19 +232,16 @@ export class TonbridgeValidatorClient extends TonbridgeValidatorQueryClient impl
     }, _fee, _memo, _funds);
   };
   verifyMasterchainBlockByValidatorSignatures = async ({
-    blockBoc,
     blockHeaderProof,
     fileHash,
     vdata
   }: {
-    blockBoc: HexBinary;
     blockHeaderProof: HexBinary;
     fileHash: HexBinary;
     vdata: VdataHex[];
   }, _fee: number | StdFee | "auto" = "auto", _memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       verify_masterchain_block_by_validator_signatures: {
-        block_boc: blockBoc,
         block_header_proof: blockHeaderProof,
         file_hash: fileHash,
         vdata

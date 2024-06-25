@@ -1,10 +1,10 @@
 // jest.config.js
 module.exports = {
   transform: {
-    "^.+\\.ts?$": ["@swc/jest"]
+    "^.+\\.ts?$": ["@swc/jest"],
   },
   testEnvironment: "node",
-  modulePathIgnorePatterns: ["<rootDir>/dist/", "<rootDir>/packages/contracts-demo/src/ton-rocks-js"],
+  modulePathIgnorePatterns: ["<rootDir>/dist/"],
   collectCoverage: true,
   coverageReporters: ["cobertura", "html"],
   coveragePathIgnorePatterns: [
@@ -14,6 +14,6 @@ module.exports = {
     "<rootDir>/packages/.+/dist",
     "<rootDir>/node_modules/",
     "<rootDir>/packages/.+/node_modules/",
-    "<rootDir>/packages/.+/tests/"
-  ]
+    "<rootDir>/packages/.+/tests/",
+  ],
 };

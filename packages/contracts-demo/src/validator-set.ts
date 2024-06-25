@@ -1,19 +1,27 @@
 import "dotenv/config";
-import { LiteClient, LiteEngine, LiteRoundRobinEngine, LiteSingleEngine } from "ton-lite-client";
+import {
+  LiteClient,
+  LiteEngine,
+  LiteRoundRobinEngine,
+  LiteSingleEngine,
+} from "ton-lite-client";
 import { Functions } from "ton-lite-client/dist/schema";
 import { intToIP, parseBlock } from "./common";
 
 (async () => {
-  const { liteservers } = await fetch("https://ton.org/global.config.json").then((data) => data.json());
-  // Personal choice. Can choose a different index if needed
-  const server = liteservers[0];
+  const { liteservers } = await fetch(
+    "https://ton.org/global.config.json"
+  ).then((data) => data.json());
 
   const engines: LiteEngine[] = [];
   engines.push(
-    new LiteSingleEngine({
-      host: `tcp://${intToIP(server.ip)}:${server.port}`,
-      publicKey: Buffer.from(server.id.key, "base64")
-    })
+    ...liteservers.map(
+      (server: any) =>
+        new LiteSingleEngine({
+          host: `tcp://${intToIP(server.ip)}:${server.port}`,
+          publicKey: Buffer.from(server.id.key, "base64"),
+        })
+    )
   );
   const engine: LiteEngine = new LiteRoundRobinEngine(engines);
   const client = new LiteClient({ engine });
@@ -26,14 +34,16 @@ import { intToIP, parseBlock } from "./common";
   let initBlockSeqno = master.last.seqno;
   while (true) {
     const fullBlock = await client.getFullBlock(initBlockSeqno);
-    const initialBlockInformation = fullBlock.shards.find((blockRes) => blockRes.seqno === initBlockSeqno);
+    const initialBlockInformation = fullBlock.shards.find(
+      (blockRes) => blockRes.seqno === initBlockSeqno
+    );
     // get block
     const block = await engine.query(Functions.liteServer_getBlock, {
       kind: "liteServer.getBlock",
       id: {
         kind: "tonNode.blockIdExt",
-        ...initialBlockInformation
-      }
+        ...initialBlockInformation,
+      },
     });
 
     const parsedBlock = await parseBlock(block);

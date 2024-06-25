@@ -4,11 +4,11 @@
 
 ```bash
 # build code:
-cwtools build ../tonbridge-cw-contracts/* -o packages/contracts-build/data
+cwtools build ../tonbridge-cw-contracts/contracts/* -o packages/contracts-build/data
 # build schema
-cwtools build ../tonbridge-cw-contracts/* -s
+cwtools build ../tonbridge-cw-contracts/contracts/* -s
 # gen code:
-cwtools gents ../tonbridge-cw-contracts/* -o packages/contracts-sdk/src
+cwtools gents ../tonbridge-cw-contracts/contracts/* -o packages/contracts-sdk/src
 # gen doc:
 yarn docs
 

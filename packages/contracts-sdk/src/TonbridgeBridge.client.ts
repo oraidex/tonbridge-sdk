@@ -7,10 +7,11 @@
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
 import {HexBinary, Boolean} from "./types";
-import {Uint128, Addr, AssetInfo, InstantiateMsg, ExecuteMsg, Binary, UpdatePairMsg, BridgeToTonMsg, Cw20ReceiveMsg, TokenFee, Ratio, QueryMsg, MigrateMsg, Amount, ChannelResponse, Coin, Cw20CoinVerified, ConfigResponse} from "./TonbridgeBridge.types";
+import {Uint128, Addr, AssetInfo, InstantiateMsg, ExecuteMsg, Binary, UpdatePairMsg, BridgeToTonMsg, Cw20ReceiveMsg, TokenFee, Ratio, QueryMsg, MigrateMsg, Amount, ChannelResponse, Coin, Cw20CoinVerified, RouterController, Config, String} from "./TonbridgeBridge.types";
 export interface TonbridgeBridgeReadOnlyInterface {
   contractAddress: string;
-  config: () => Promise<ConfigResponse>;
+  owner: () => Promise<String>;
+  config: () => Promise<Config>;
   isTxProcessed: ({
     txHash
   }: {
@@ -29,12 +30,18 @@ export class TonbridgeBridgeQueryClient implements TonbridgeBridgeReadOnlyInterf
   constructor(client: CosmWasmClient, contractAddress: string) {
     this.client = client;
     this.contractAddress = contractAddress;
+    this.owner = this.owner.bind(this);
     this.config = this.config.bind(this);
     this.isTxProcessed = this.isTxProcessed.bind(this);
     this.channelStateData = this.channelStateData.bind(this);
   }
 
-  config = async (): Promise<ConfigResponse> => {
+  owner = async (): Promise<String> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      owner: {}
+    });
+  };
+  config = async (): Promise<Config> => {
     return this.client.queryContractSmart(this.contractAddress, {
       config: {}
     });
@@ -67,12 +74,10 @@ export interface TonbridgeBridgeInterface extends TonbridgeBridgeReadOnlyInterfa
   sender: string;
   readTransaction: ({
     txBoc,
-    txProof,
-    validatorContractAddr
+    txProof
   }: {
     txBoc: HexBinary;
     txProof: HexBinary;
-    validatorContractAddr: string;
   }, _fee?: number | StdFee | "auto", _memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   updateMappingPair: ({
     denom,
@@ -120,19 +125,23 @@ export interface TonbridgeBridgeInterface extends TonbridgeBridgeReadOnlyInterfa
     newOwner: Addr;
   }, _fee?: number | StdFee | "auto", _memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   updateConfig: ({
+    bridgeAdapter,
     relayerFee,
     relayerFeeReceiver,
     relayerFeeToken,
     swapRouterContract,
     tokenFee,
-    tokenFeeReceiver
+    tokenFeeReceiver,
+    validatorContractAddr
   }: {
+    bridgeAdapter?: string;
     relayerFee?: Uint128;
     relayerFeeReceiver?: Addr;
     relayerFeeToken?: AssetInfo;
     swapRouterContract?: string;
     tokenFee?: TokenFee[];
     tokenFeeReceiver?: Addr;
+    validatorContractAddr?: Addr;
   }, _fee?: number | StdFee | "auto", _memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
 }
 export class TonbridgeBridgeClient extends TonbridgeBridgeQueryClient implements TonbridgeBridgeInterface {
@@ -156,18 +165,15 @@ export class TonbridgeBridgeClient extends TonbridgeBridgeQueryClient implements
 
   readTransaction = async ({
     txBoc,
-    txProof,
-    validatorContractAddr
+    txProof
   }: {
     txBoc: HexBinary;
     txProof: HexBinary;
-    validatorContractAddr: string;
   }, _fee: number | StdFee | "auto" = "auto", _memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       read_transaction: {
         tx_boc: txBoc,
-        tx_proof: txProof,
-        validator_contract_addr: validatorContractAddr
+        tx_proof: txProof
       }
     }, _fee, _memo, _funds);
   };
@@ -257,28 +263,34 @@ export class TonbridgeBridgeClient extends TonbridgeBridgeQueryClient implements
     }, _fee, _memo, _funds);
   };
   updateConfig = async ({
+    bridgeAdapter,
     relayerFee,
     relayerFeeReceiver,
     relayerFeeToken,
     swapRouterContract,
     tokenFee,
-    tokenFeeReceiver
+    tokenFeeReceiver,
+    validatorContractAddr
   }: {
+    bridgeAdapter?: string;
     relayerFee?: Uint128;
     relayerFeeReceiver?: Addr;
     relayerFeeToken?: AssetInfo;
     swapRouterContract?: string;
     tokenFee?: TokenFee[];
     tokenFeeReceiver?: Addr;
+    validatorContractAddr?: Addr;
   }, _fee: number | StdFee | "auto" = "auto", _memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       update_config: {
+        bridge_adapter: bridgeAdapter,
         relayer_fee: relayerFee,
         relayer_fee_receiver: relayerFeeReceiver,
         relayer_fee_token: relayerFeeToken,
         swap_router_contract: swapRouterContract,
         token_fee: tokenFee,
-        token_fee_receiver: tokenFeeReceiver
+        token_fee_receiver: tokenFeeReceiver,
+        validator_contract_addr: validatorContractAddr
       }
     }, _fee, _memo, _funds);
   };

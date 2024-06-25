@@ -18,7 +18,6 @@ export type ExecuteMsg = {
   };
 } | {
   verify_masterchain_block_by_validator_signatures: {
-    block_boc: HexBinary;
     block_header_proof: HexBinary;
     file_hash: HexBinary;
     vdata: VdataHex[];

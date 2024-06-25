@@ -17,12 +17,12 @@ export interface InstantiateMsg {
   relayer_fee_token: AssetInfo;
   swap_router_contract: string;
   token_fee_receiver: Addr;
+  validator_contract_addr: Addr;
 }
 export type ExecuteMsg = {
   read_transaction: {
     tx_boc: HexBinary;
     tx_proof: HexBinary;
-    validator_contract_addr: string;
   };
 } | {
   update_mapping_pair: UpdatePairMsg;
@@ -40,12 +40,14 @@ export type ExecuteMsg = {
   };
 } | {
   update_config: {
+    bridge_adapter?: string | null;
     relayer_fee?: Uint128 | null;
     relayer_fee_receiver?: Addr | null;
     relayer_fee_token?: AssetInfo | null;
     swap_router_contract?: string | null;
     token_fee?: TokenFee[] | null;
     token_fee_receiver?: Addr | null;
+    validator_contract_addr?: Addr | null;
   };
 };
 export type Binary = string;
@@ -77,6 +79,8 @@ export interface Ratio {
   nominator: number;
 }
 export type QueryMsg = {
+  owner: {};
+} | {
   config: {};
 } | {
   is_tx_processed: {
@@ -87,7 +91,15 @@ export type QueryMsg = {
     channel_id: string;
   };
 };
-export interface MigrateMsg {}
+export interface MigrateMsg {
+  bridge_adapter: string;
+  relayer_fee?: Uint128 | null;
+  relayer_fee_receiver: Addr;
+  relayer_fee_token: AssetInfo;
+  swap_router_contract: string;
+  token_fee_receiver: Addr;
+  validator_contract_addr: Addr;
+}
 export type Amount = {
   native: Coin;
 } | {
@@ -105,6 +117,14 @@ export interface Cw20CoinVerified {
   address: Addr;
   amount: Uint128;
 }
-export interface ConfigResponse {
-  owner?: string | null;
+export type RouterController = string;
+export interface Config {
+  bridge_adapter: string;
+  relayer_fee: Uint128;
+  relayer_fee_receiver: Addr;
+  relayer_fee_token: AssetInfo;
+  swap_router_contract: RouterController;
+  token_fee_receiver: Addr;
+  validator_contract_addr: Addr;
 }
+export type String = string;

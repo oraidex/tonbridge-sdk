@@ -1,7 +1,12 @@
 import { Cell, loadShardStateUnsplit } from "@ton/core";
 import { assert } from "console";
 import "dotenv/config";
-import { LiteClient, LiteEngine, LiteRoundRobinEngine, LiteSingleEngine } from "ton-lite-client";
+import {
+  LiteClient,
+  LiteEngine,
+  LiteRoundRobinEngine,
+  LiteSingleEngine,
+} from "ton-lite-client";
 import { Functions } from "ton-lite-client/dist/schema";
 
 function intToIP(int: number) {
@@ -15,16 +20,19 @@ function intToIP(int: number) {
 
 // verifying shard block: https://docs.ton.org/develop/data-formats/proofs#shard-block
 (async () => {
-  const { liteservers } = await fetch("https://ton.org/global.config.json").then((data) => data.json());
-  // Personal choice. Can choose a different index if needed
-  const server = liteservers[2];
+  const { liteservers } = await fetch(
+    "https://ton.org/global.config.json"
+  ).then((data) => data.json());
 
   const engines: LiteEngine[] = [];
   engines.push(
-    new LiteSingleEngine({
-      host: `tcp://${intToIP(server.ip)}:${server.port}`,
-      publicKey: Buffer.from(server.id.key, "base64")
-    })
+    ...liteservers.map(
+      (server: any) =>
+        new LiteSingleEngine({
+          host: `tcp://${intToIP(server.ip)}:${server.port}`,
+          publicKey: Buffer.from(server.id.key, "base64"),
+        })
+    )
   );
   const engine: LiteEngine = new LiteRoundRobinEngine(engines);
   const client = new LiteClient({ engine });
@@ -32,21 +40,25 @@ function intToIP(int: number) {
   // Create Client
   const initKeyBlockSeqno = 38101265;
   let fullBlock = await client.getFullBlock(initKeyBlockSeqno);
-  const initialKeyBlockInformation = fullBlock.shards.find((blockRes) => blockRes.seqno === initKeyBlockSeqno);
+  const initialKeyBlockInformation = fullBlock.shards.find(
+    (blockRes) => blockRes.seqno === initKeyBlockSeqno
+  );
   const shardInfo = await engine.query(Functions.liteServer_getShardInfo, {
     kind: "liteServer.getShardInfo",
     id: {
       kind: "tonNode.blockIdExt",
-      ...initialKeyBlockInformation
+      ...initialKeyBlockInformation,
     },
     workchain: fullBlock.shards[1].workchain,
     shard: fullBlock.shards[1].shard,
-    exact: true
+    exact: true,
   });
   const shardCell = Cell.fromBoc(shardInfo.shardProof);
   const masterchainBlockMerkleProof = shardCell[0];
   // verify like in verify-block-header
-  const merkleProofHash = masterchainBlockMerkleProof.refs[0].hash(0).toString("hex");
+  const merkleProofHash = masterchainBlockMerkleProof.refs[0]
+    .hash(0)
+    .toString("hex");
   const rootHash = initialKeyBlockInformation.rootHash.toString("hex");
   assert(merkleProofHash === rootHash);
 
