@@ -18,6 +18,7 @@ import {
   LiteSingleEngine,
 } from "ton-lite-client";
 import { Functions } from "ton-lite-client/dist/schema";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { intToIP } from "../src/common";
 
 describe("Real shard block data tests", () => {

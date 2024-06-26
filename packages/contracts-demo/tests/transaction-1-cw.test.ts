@@ -13,6 +13,7 @@ import {
   TonbridgeValidatorTypes,
 } from "@oraichain/tonbridge-contracts-sdk";
 import { Cell } from "@ton/core";
+import { beforeAll, describe, expect, it } from "vitest";
 import { queryAllValidatorCandidates, queryAllValidators } from "./common";
 import {
   data,

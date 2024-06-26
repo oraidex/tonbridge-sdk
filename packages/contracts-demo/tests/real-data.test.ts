@@ -20,6 +20,7 @@ import {
 } from "ton-lite-client";
 import { liteServer_masterchainInfoExt } from "ton-lite-client/dist/schema";
 import TonWeb from "tonweb";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { intToIP } from "../src/common";
 import {
   queryAllValidatorCandidates,
