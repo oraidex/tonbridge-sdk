@@ -1,8 +1,12 @@
-import {HexBinary, Boolean} from "./types";
+import {HexBinary, Addr, Boolean} from "./types";
 export interface InstantiateMsg {
   boc?: HexBinary | null;
 }
 export type ExecuteMsg = {
+  update_owner: {
+    new_owner: Addr;
+  };
+} | {
   prepare_new_key_block: {
     keyblock_boc: HexBinary;
   };

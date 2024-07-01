@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { Coin, StdFee } from "@cosmjs/amino";
-import {HexBinary, Boolean} from "./types";
+import {HexBinary, Addr, Boolean} from "./types";
 import {InstantiateMsg, ExecuteMsg, VdataHex, QueryMsg, MigrateMsg, ConfigResponse, ArrayOfUserFriendlyValidator, UserFriendlyValidator} from "./TonbridgeValidator.types";
 export interface TonbridgeValidatorReadOnlyInterface {
   contractAddress: string;
@@ -131,6 +131,11 @@ export class TonbridgeValidatorQueryClient implements TonbridgeValidatorReadOnly
 export interface TonbridgeValidatorInterface extends TonbridgeValidatorReadOnlyInterface {
   contractAddress: string;
   sender: string;
+  updateOwner: ({
+    newOwner
+  }: {
+    newOwner: Addr;
+  }, _fee?: number | StdFee | "auto", _memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   prepareNewKeyBlock: ({
     keyblockBoc
   }: {
@@ -184,6 +189,7 @@ export class TonbridgeValidatorClient extends TonbridgeValidatorQueryClient impl
     this.client = client;
     this.sender = sender;
     this.contractAddress = contractAddress;
+    this.updateOwner = this.updateOwner.bind(this);
     this.prepareNewKeyBlock = this.prepareNewKeyBlock.bind(this);
     this.resetValidatorSet = this.resetValidatorSet.bind(this);
     this.verifyKeyBlock = this.verifyKeyBlock.bind(this);
@@ -192,6 +198,17 @@ export class TonbridgeValidatorClient extends TonbridgeValidatorQueryClient impl
     this.setVerifiedBlock = this.setVerifiedBlock.bind(this);
   }
 
+  updateOwner = async ({
+    newOwner
+  }: {
+    newOwner: Addr;
+  }, _fee: number | StdFee | "auto" = "auto", _memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      update_owner: {
+        new_owner: newOwner
+      }
+    }, _fee, _memo, _funds);
+  };
   prepareNewKeyBlock = async ({
     keyblockBoc
   }: {

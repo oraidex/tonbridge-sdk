@@ -6,8 +6,8 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import {HexBinary, Boolean} from "./types";
-import {Uint128, Addr, AssetInfo, InstantiateMsg, ExecuteMsg, Binary, UpdatePairMsg, BridgeToTonMsg, Cw20ReceiveMsg, TokenFee, Ratio, QueryMsg, MigrateMsg, Amount, ChannelResponse, Coin, Cw20CoinVerified, RouterController, Config, String} from "./TonbridgeBridge.types";
+import {Addr, HexBinary, Boolean} from "./types";
+import {Uint128, AssetInfo, InstantiateMsg, ExecuteMsg, Binary, UpdatePairMsg, DeletePairMsg, BridgeToTonMsg, Cw20ReceiveMsg, TokenFee, Ratio, QueryMsg, MigrateMsg, Amount, ChannelResponse, Coin, Cw20CoinVerified, RouterController, Config, String, PairQuery, MappingMetadata} from "./TonbridgeBridge.types";
 export interface TonbridgeBridgeReadOnlyInterface {
   contractAddress: string;
   owner: () => Promise<String>;
@@ -22,6 +22,16 @@ export interface TonbridgeBridgeReadOnlyInterface {
   }: {
     channelId: string;
   }) => Promise<ChannelResponse>;
+  tokenFee: ({
+    remoteTokenDenom
+  }: {
+    remoteTokenDenom: string;
+  }) => Promise<Ratio>;
+  pairMapping: ({
+    key
+  }: {
+    key: string;
+  }) => Promise<PairQuery>;
 }
 export class TonbridgeBridgeQueryClient implements TonbridgeBridgeReadOnlyInterface {
   client: CosmWasmClient;
@@ -34,6 +44,8 @@ export class TonbridgeBridgeQueryClient implements TonbridgeBridgeReadOnlyInterf
     this.config = this.config.bind(this);
     this.isTxProcessed = this.isTxProcessed.bind(this);
     this.channelStateData = this.channelStateData.bind(this);
+    this.tokenFee = this.tokenFee.bind(this);
+    this.pairMapping = this.pairMapping.bind(this);
   }
 
   owner = async (): Promise<String> => {
@@ -68,6 +80,28 @@ export class TonbridgeBridgeQueryClient implements TonbridgeBridgeReadOnlyInterf
       }
     });
   };
+  tokenFee = async ({
+    remoteTokenDenom
+  }: {
+    remoteTokenDenom: string;
+  }): Promise<Ratio> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      token_fee: {
+        remote_token_denom: remoteTokenDenom
+      }
+    });
+  };
+  pairMapping = async ({
+    key
+  }: {
+    key: string;
+  }): Promise<PairQuery> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      pair_mapping: {
+        key
+      }
+    });
+  };
 }
 export interface TonbridgeBridgeInterface extends TonbridgeBridgeReadOnlyInterface {
   contractAddress: string;
@@ -94,15 +128,24 @@ export interface TonbridgeBridgeInterface extends TonbridgeBridgeReadOnlyInterfa
     opcode: HexBinary;
     remoteDecimals: number;
   }, _fee?: number | StdFee | "auto", _memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
+  deleteMappingPair: ({
+    denom,
+    localChannelId
+  }: {
+    denom: string;
+    localChannelId: string;
+  }, _fee?: number | StdFee | "auto", _memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   bridgeToTon: ({
     crcSrc,
     denom,
     localChannelId,
+    timeout,
     to
   }: {
     crcSrc: number;
     denom: string;
     localChannelId: string;
+    timeout?: number;
     to: string;
   }, _fee?: number | StdFee | "auto", _memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   receive: ({
@@ -143,6 +186,20 @@ export interface TonbridgeBridgeInterface extends TonbridgeBridgeReadOnlyInterfa
     tokenFeeReceiver?: Addr;
     validatorContractAddr?: Addr;
   }, _fee?: number | StdFee | "auto", _memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
+  processTimeoutSendPacket: ({
+    masterchainHeaderProof,
+    txBoc,
+    txProofUnreceived
+  }: {
+    masterchainHeaderProof: HexBinary;
+    txBoc: HexBinary;
+    txProofUnreceived: HexBinary;
+  }, _fee?: number | StdFee | "auto", _memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
+  processTimeoutRecievePacket: ({
+    receivePacket
+  }: {
+    receivePacket: HexBinary;
+  }, _fee?: number | StdFee | "auto", _memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
 }
 export class TonbridgeBridgeClient extends TonbridgeBridgeQueryClient implements TonbridgeBridgeInterface {
   client: SigningCosmWasmClient;
@@ -156,11 +213,14 @@ export class TonbridgeBridgeClient extends TonbridgeBridgeQueryClient implements
     this.contractAddress = contractAddress;
     this.readTransaction = this.readTransaction.bind(this);
     this.updateMappingPair = this.updateMappingPair.bind(this);
+    this.deleteMappingPair = this.deleteMappingPair.bind(this);
     this.bridgeToTon = this.bridgeToTon.bind(this);
     this.receive = this.receive.bind(this);
     this.submitBridgeToTonInfo = this.submitBridgeToTonInfo.bind(this);
     this.updateOwner = this.updateOwner.bind(this);
     this.updateConfig = this.updateConfig.bind(this);
+    this.processTimeoutSendPacket = this.processTimeoutSendPacket.bind(this);
+    this.processTimeoutRecievePacket = this.processTimeoutRecievePacket.bind(this);
   }
 
   readTransaction = async ({
@@ -203,15 +263,31 @@ export class TonbridgeBridgeClient extends TonbridgeBridgeQueryClient implements
       }
     }, _fee, _memo, _funds);
   };
+  deleteMappingPair = async ({
+    denom,
+    localChannelId
+  }: {
+    denom: string;
+    localChannelId: string;
+  }, _fee: number | StdFee | "auto" = "auto", _memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      delete_mapping_pair: {
+        denom,
+        local_channel_id: localChannelId
+      }
+    }, _fee, _memo, _funds);
+  };
   bridgeToTon = async ({
     crcSrc,
     denom,
     localChannelId,
+    timeout,
     to
   }: {
     crcSrc: number;
     denom: string;
     localChannelId: string;
+    timeout?: number;
     to: string;
   }, _fee: number | StdFee | "auto" = "auto", _memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
@@ -219,6 +295,7 @@ export class TonbridgeBridgeClient extends TonbridgeBridgeQueryClient implements
         crc_src: crcSrc,
         denom,
         local_channel_id: localChannelId,
+        timeout,
         to
       }
     }, _fee, _memo, _funds);
@@ -291,6 +368,34 @@ export class TonbridgeBridgeClient extends TonbridgeBridgeQueryClient implements
         token_fee: tokenFee,
         token_fee_receiver: tokenFeeReceiver,
         validator_contract_addr: validatorContractAddr
+      }
+    }, _fee, _memo, _funds);
+  };
+  processTimeoutSendPacket = async ({
+    masterchainHeaderProof,
+    txBoc,
+    txProofUnreceived
+  }: {
+    masterchainHeaderProof: HexBinary;
+    txBoc: HexBinary;
+    txProofUnreceived: HexBinary;
+  }, _fee: number | StdFee | "auto" = "auto", _memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      process_timeout_send_packet: {
+        masterchain_header_proof: masterchainHeaderProof,
+        tx_boc: txBoc,
+        tx_proof_unreceived: txProofUnreceived
+      }
+    }, _fee, _memo, _funds);
+  };
+  processTimeoutRecievePacket = async ({
+    receivePacket
+  }: {
+    receivePacket: HexBinary;
+  }, _fee: number | StdFee | "auto" = "auto", _memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      process_timeout_recieve_packet: {
+        receive_packet: receivePacket
       }
     }, _fee, _memo, _funds);
   };

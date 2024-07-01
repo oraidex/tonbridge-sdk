@@ -13,8 +13,8 @@ __metadata:
   linkType: hard
 
 "@apollo/client@npm:^3.5.8":
-  version: 3.10.4
-  resolution: "@apollo/client@npm:3.10.4"
+  version: 3.10.8
+  resolution: "@apollo/client@npm:3.10.8"
   dependencies:
     "@graphql-typed-document-node/core": "npm:^3.1.1"
     "@wry/caches": "npm:^1.0.0"
@@ -45,7 +45,7 @@ __metadata:
       optional: true
     subscriptions-transport-ws:
       optional: true
-  checksum: 10c0/057af5534db5e454957b2922fa973ccaa1b159d4cb39964b0a7fdbaeb07c779ca14eb680caa9579dfdbd85554ca7c5e9981d79ad1e6924ccef57e4acf6c67988
+  checksum: 10c0/38f69040c8bbed78dc3b7c18de8ede1aacdf0501e5a7340171d95d4c339b72857c6ef3cb233038cc3e69bc44f1917c4c1a01cfaae3a130285eafbf89f96b290a
   languageName: node
   linkType: hard
 
@@ -1278,16 +1278,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@injectivelabs/exceptions@npm:^1.12.1, @injectivelabs/exceptions@npm:^1.14.6":
-  version: 1.14.6
-  resolution: "@injectivelabs/exceptions@npm:1.14.6"
+"@injectivelabs/exceptions@npm:^1.12.1, @injectivelabs/exceptions@npm:^1.14.11, @injectivelabs/exceptions@npm:^1.14.12":
+  version: 1.14.12
+  resolution: "@injectivelabs/exceptions@npm:1.14.12"
   dependencies:
     "@injectivelabs/grpc-web": "npm:^0.0.1"
-    "@injectivelabs/ts-types": "npm:^1.14.6"
+    "@injectivelabs/ts-types": "npm:^1.14.12"
     http-status-codes: "npm:^2.2.0"
     link-module-alias: "npm:^1.2.0"
     shx: "npm:^0.3.2"
-  checksum: 10c0/97647689b98306481919b2370e6d76ddbf83cfd1fba33b066a0c731bbe75ed5c38e984bbaea23b9f094c43d31dde033919bc81faf573dc4740ced30875c5916f
+  checksum: 10c0/9d826caf193966d100d41ed67b18cf131ab0d4371fc5d54fd915297eda59f80e6b6a0205759b6f1ba78cb3571fef4c668261f5d77dfebb5fed0a52d6faa380c2
   languageName: node
   linkType: hard
 
@@ -1344,16 +1344,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@injectivelabs/networks@npm:^1.12.1, @injectivelabs/networks@npm:^1.14.6":
-  version: 1.14.6
-  resolution: "@injectivelabs/networks@npm:1.14.6"
+"@injectivelabs/networks@npm:^1.12.1, @injectivelabs/networks@npm:^1.14.11":
+  version: 1.14.12
+  resolution: "@injectivelabs/networks@npm:1.14.12"
   dependencies:
-    "@injectivelabs/exceptions": "npm:^1.14.6"
-    "@injectivelabs/ts-types": "npm:^1.14.6"
-    "@injectivelabs/utils": "npm:^1.14.6"
+    "@injectivelabs/exceptions": "npm:^1.14.12"
+    "@injectivelabs/ts-types": "npm:^1.14.12"
+    "@injectivelabs/utils": "npm:^1.14.12"
     link-module-alias: "npm:^1.2.0"
     shx: "npm:^0.3.2"
-  checksum: 10c0/12b34084cf6eb29f86bc926404da9aa3858fa6346ff26c9d00acd88f70da19d6d87732352ff975285fc8b8df11d44f1677f20f515be7ecb3e6a1c9b9ff463039
+  checksum: 10c0/ebe691ed94f2d410a5db64e4f64f91cd4efc6898b463bd1950472b5468d333d3eec55d03b28dca72cc6133fc2a9bc7b07dd6e522b6f6f2638c2ee70ce9aeaf2c
   languageName: node
   linkType: hard
 
@@ -1403,27 +1403,27 @@ __metadata:
   linkType: hard
 
 "@injectivelabs/test-utils@npm:^1.12.1":
-  version: 1.14.4
-  resolution: "@injectivelabs/test-utils@npm:1.14.4"
+  version: 1.14.6
+  resolution: "@injectivelabs/test-utils@npm:1.14.6"
   dependencies:
-    axios: "npm:^0.21.1"
+    axios: "npm:^1.6.4"
     bignumber.js: "npm:^9.0.1"
     link-module-alias: "npm:^1.2.0"
     shx: "npm:^0.3.2"
     snakecase-keys: "npm:^5.1.2"
     store2: "npm:^2.12.0"
-  checksum: 10c0/bcffce58bec7c8c60ff79d04c247c9621330b3bbfb9b08fcf867be0171f2e6830a220608242a2fe7a9824b913cb0010668656c77d51a7ea16f4db31aa62d5896
+  checksum: 10c0/76426af14d1e8b57f3937fb6aa9e8215c72f319d3fca90bd0c6f8f69e766dc030a21b7a30173eaf26d861bbf8018e8a080f9476cef7766db6d752bb1a3687ea3
   languageName: node
   linkType: hard
 
 "@injectivelabs/token-metadata@npm:^1.12.1":
-  version: 1.14.7
-  resolution: "@injectivelabs/token-metadata@npm:1.14.7"
+  version: 1.14.11
+  resolution: "@injectivelabs/token-metadata@npm:1.14.11"
   dependencies:
-    "@injectivelabs/exceptions": "npm:^1.14.6"
-    "@injectivelabs/networks": "npm:^1.14.6"
-    "@injectivelabs/ts-types": "npm:^1.14.6"
-    "@injectivelabs/utils": "npm:^1.14.6"
+    "@injectivelabs/exceptions": "npm:^1.14.11"
+    "@injectivelabs/networks": "npm:^1.14.11"
+    "@injectivelabs/ts-types": "npm:^1.14.11"
+    "@injectivelabs/utils": "npm:^1.14.11"
     "@types/lodash.values": "npm:^4.3.6"
     copyfiles: "npm:^2.4.1"
     jsonschema: "npm:^1.4.0"
@@ -1431,34 +1431,34 @@ __metadata:
     lodash: "npm:^4.17.21"
     lodash.values: "npm:^4.3.0"
     shx: "npm:^0.3.2"
-  checksum: 10c0/1baf7fb5f581134dfde4b36587887ce2a91e11ef145b1ceefc2ec2562fc4631b8ea27f246c6c0b92ed72b38a79516e73fa6bfcd5bcb9908ab794b41e00eb9e5d
+  checksum: 10c0/db20503ecbff6ef04920781ba7978fc4fb357c96ce93f7cf74024f4841fb5fe5ca5cee6f1ce054a0f80ef6a1840406c2789e34f18eea21dd5115c38556ecc9bc
   languageName: node
   linkType: hard
 
-"@injectivelabs/ts-types@npm:^1.12.1, @injectivelabs/ts-types@npm:^1.14.6":
-  version: 1.14.6
-  resolution: "@injectivelabs/ts-types@npm:1.14.6"
+"@injectivelabs/ts-types@npm:^1.12.1, @injectivelabs/ts-types@npm:^1.14.11, @injectivelabs/ts-types@npm:^1.14.12":
+  version: 1.14.12
+  resolution: "@injectivelabs/ts-types@npm:1.14.12"
   dependencies:
     link-module-alias: "npm:^1.2.0"
     shx: "npm:^0.3.2"
-  checksum: 10c0/a1af4bd1964c80a3ded95a2e70439616f4153796008dfe9054244727c4635faae617fbaddc90fff7d108b9ecb9118ec919ee7452ec67d9390b5a6b00a616033d
+  checksum: 10c0/128ff5127bb9221b583d3fb7db1483dd11c17020c9c6099b173dca59f00efd045c828eb0378b4d8a6f4dedecb97cc99768b833301996ae6adf56fd8d4a97fa0e
   languageName: node
   linkType: hard
 
-"@injectivelabs/utils@npm:^1.12.1, @injectivelabs/utils@npm:^1.14.6":
-  version: 1.14.6
-  resolution: "@injectivelabs/utils@npm:1.14.6"
+"@injectivelabs/utils@npm:^1.12.1, @injectivelabs/utils@npm:^1.14.11, @injectivelabs/utils@npm:^1.14.12":
+  version: 1.14.12
+  resolution: "@injectivelabs/utils@npm:1.14.12"
   dependencies:
-    "@injectivelabs/exceptions": "npm:^1.14.6"
-    "@injectivelabs/ts-types": "npm:^1.14.6"
-    axios: "npm:^0.21.1"
+    "@injectivelabs/exceptions": "npm:^1.14.12"
+    "@injectivelabs/ts-types": "npm:^1.14.12"
+    axios: "npm:^1.6.4"
     bignumber.js: "npm:^9.0.1"
     http-status-codes: "npm:^2.2.0"
     link-module-alias: "npm:^1.2.0"
     shx: "npm:^0.3.2"
     snakecase-keys: "npm:^5.1.2"
     store2: "npm:^2.12.0"
-  checksum: 10c0/45156658e0aa9a7632c33ce38e3718c676c4f40173200b5b37daa466bb3553616a596cb5b8dd62f75ab56a6fe0f523f52da856ecdb307c5e5e13bc9abb265a51
+  checksum: 10c0/0473f4a7c747da7b57c553d9c810b85fc0c69035b2cd10c781d121e8cead4ad714bfac2da21bc8fdb58204d6dff20e61213aa11dd12d4e2f62829c244b2cf5df
   languageName: node
   linkType: hard
 
@@ -2396,15 +2396,15 @@ __metadata:
   linkType: hard
 
 "@peculiar/webcrypto@npm:^1.0.22":
-  version: 1.4.6
-  resolution: "@peculiar/webcrypto@npm:1.4.6"
+  version: 1.5.0
+  resolution: "@peculiar/webcrypto@npm:1.5.0"
   dependencies:
     "@peculiar/asn1-schema": "npm:^2.3.8"
     "@peculiar/json-schema": "npm:^1.1.12"
     pvtsutils: "npm:^1.3.5"
     tslib: "npm:^2.6.2"
-    webcrypto-core: "npm:^1.7.9"
-  checksum: 10c0/b9c80b1a0a3e3ebbf045bd5167fe99ec4a83b170e9aa15a5952a9138afc278210d772306dcc57101d9407c3f9c70dbf6bfb4d8b3f20996ad35c650bb0fe6a90c
+    webcrypto-core: "npm:^1.8.0"
+  checksum: 10c0/4f6f24b2c52c2155b9c569b6eb1d57954cb5f7bd2764a50cdaed7aea17a6dcf304b75b87b57ba318756ffec8179a07d9a76534aaf77855912b838543e5ff8983
   languageName: node
   linkType: hard
 
@@ -2877,8 +2877,8 @@ __metadata:
   linkType: hard
 
 "@ton/ton@npm:^13.11.1":
-  version: 13.11.1
-  resolution: "@ton/ton@npm:13.11.1"
+  version: 13.11.2
+  resolution: "@ton/ton@npm:13.11.2"
   dependencies:
     axios: "npm:^1.6.7"
     dataloader: "npm:^2.0.0"
@@ -2888,7 +2888,7 @@ __metadata:
   peerDependencies:
     "@ton/core": ">=0.56.0"
     "@ton/crypto": ">=3.2.0"
-  checksum: 10c0/b8ad1d326ed70c5b5ea8d0d1b4a62b31c15d9c2e7ab46e5bf53d6a1ebff86d07444ed08e4d212063a557a4801d8f0f0b949b58220807809bcbe13caa3c8ff0ed
+  checksum: 10c0/80a5b3e38e9c07dfa76f4c712514af3abc50fde2644f08fbb3bc6aa432c12daf79727b241c78d8a97cb7499113182d021f7ddfbbfce7c427ef517340fb56b8e7
   languageName: node
   linkType: hard
 
@@ -3070,9 +3070,9 @@ __metadata:
   linkType: hard
 
 "@types/lodash@npm:*":
-  version: 4.17.3
-  resolution: "@types/lodash@npm:4.17.3"
-  checksum: 10c0/04eb8cfde06b12f4b68251b8956a636c4e80e4ac85926f41d502e26b9c6d050dbbc9e586e4bf706c62e97d78309c3dad079e791f07efbe7ff6f19ccf62a414b4
+  version: 4.17.6
+  resolution: "@types/lodash@npm:4.17.6"
+  checksum: 10c0/3b197ac47af9443fee8c4719c5ffde527d7febc018b827d44a6bc2523c728c7adfdd25196fdcfe3eed827993e0c41a917d0da6e78938b18b2be94164789f1117
   languageName: node
   linkType: hard
 
@@ -3327,21 +3327,21 @@ __metadata:
   linkType: hard
 
 "@unimodules/core@npm:*":
-  version: 7.1.2
-  resolution: "@unimodules/core@npm:7.1.2"
+  version: 7.2.0
+  resolution: "@unimodules/core@npm:7.2.0"
   dependencies:
-    compare-versions: "npm:^3.4.0"
-  checksum: 10c0/2aeeb27e4be6c0c22ac1c8adc8d0e81675d6ed587d63c097f1669db9352b8a678784e4f9f6b35f5d2d78d626c6843e3cc2c9bb429ea6c571bd39ca4c9d64d194
+    expo-modules-core: "npm:~0.4.0"
+  checksum: 10c0/c1289887e4d438542575b9eaccf568a21c61dee2f24afebe9cb09c2efd9394450012e5379f6a91c694c695dcfd6c1059d9df0d8a6a5dff30191fc6fac4369c17
   languageName: node
   linkType: hard
 
 "@unimodules/react-native-adapter@npm:*":
-  version: 6.3.9
-  resolution: "@unimodules/react-native-adapter@npm:6.3.9"
+  version: 6.5.0
+  resolution: "@unimodules/react-native-adapter@npm:6.5.0"
   dependencies:
-    expo-modules-autolinking: "npm:^0.0.3"
-    invariant: "npm:^2.2.4"
-  checksum: 10c0/d7bc26c09383f07723fe0ef0d6831daded80e211b20962577d376e3c32eab0d409219d8b806ceb3257f3258511c069bb994b1997ea85175c849647658100fe9f
+    expo-modules-autolinking: "npm:^0.3.2"
+    expo-modules-core: "npm:~0.4.0"
+  checksum: 10c0/d98d060cd3282eb8c4153d2f3a682b7e72154f0739a9e788b680d964503fa96f4346a2cf0ca1888323a51ad688b61ee39ac86eaf821c0a79dad0b9f84c0affdb
   languageName: node
   linkType: hard
 
@@ -3950,7 +3950,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^0.21.1, axios@npm:^0.21.2":
+"axios@npm:^0.21.2":
   version: 0.21.4
   resolution: "axios@npm:0.21.4"
   dependencies:
@@ -3980,7 +3980,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.6.7":
+"axios@npm:^1.6.4, axios@npm:^1.6.7":
   version: 1.7.2
   resolution: "axios@npm:1.7.2"
   dependencies:
@@ -6093,9 +6093,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-modules-autolinking@npm:^0.0.3":
-  version: 0.0.3
-  resolution: "expo-modules-autolinking@npm:0.0.3"
+"expo-modules-autolinking@npm:^0.3.2":
+  version: 0.3.4
+  resolution: "expo-modules-autolinking@npm:0.3.4"
   dependencies:
     chalk: "npm:^4.1.0"
     commander: "npm:^7.2.0"
@@ -6104,7 +6104,17 @@ __metadata:
     fs-extra: "npm:^9.1.0"
   bin:
     expo-modules-autolinking: bin/expo-modules-autolinking.js
-  checksum: 10c0/4f62bac8193d81e7939a6e7dccc07309a99440ed6d2f642ed7a262a8ae8a5906f6477c5ef486d59b7deaab4e73468532356185b3e56dbe90f4c057500cd7f2f6
+  checksum: 10c0/fdcf1c7755cc50d51a22ef015480174bd721135aa227fa6c2febc1f7ac7453d3dea9ee2204a6fccd34cf8751d4e026400d917644f09eaffc25a0d87f791cc1d0
+  languageName: node
+  linkType: hard
+
+"expo-modules-core@npm:~0.4.0":
+  version: 0.4.10
+  resolution: "expo-modules-core@npm:0.4.10"
+  dependencies:
+    compare-versions: "npm:^3.4.0"
+    invariant: "npm:^2.2.4"
+  checksum: 10c0/dfcc1a76ae103a4906698a539af8c8a37d9ec771b5c93c154754b614e7aeff0a72ab2bb639e646d915b81fb76300295c1cac0b20a36df62a25b1daef93561498
   languageName: node
   linkType: hard
 
@@ -6811,9 +6821,9 @@ __metadata:
   linkType: hard
 
 "graphql@npm:^16.3.0":
-  version: 16.8.1
-  resolution: "graphql@npm:16.8.1"
-  checksum: 10c0/129c318156b466f440914de80dbf7bc67d17f776f2a088a40cb0da611d19a97c224b1c6d2b13cbcbc6e5776e45ed7468b8432f9c3536724e079b44f1a3d57a8a
+  version: 16.9.0
+  resolution: "graphql@npm:16.9.0"
+  checksum: 10c0/a8850f077ff767377237d1f8b1da2ec70aeb7623cdf1dfc9e1c7ae93accc0c8149c85abe68923be9871a2934b1bce5a2496f846d4d56e1cfb03eaaa7ddba9b6a
   languageName: node
   linkType: hard
 
@@ -8996,11 +9006,11 @@ __metadata:
   linkType: hard
 
 "nan@npm:^2.14.0":
-  version: 2.19.0
-  resolution: "nan@npm:2.19.0"
+  version: 2.20.0
+  resolution: "nan@npm:2.20.0"
   dependencies:
     node-gyp: "npm:latest"
-  checksum: 10c0/b8d05d75f92ee9d94affa50d0aa41b6c698254c848529452d7ab67c2e0d160a83f563bfe2cbd53e077944eceb48c757f83c93634c7c9ff404c9ec1ed4e5ced1a
+  checksum: 10c0/75775309a21ad179a55250d62ce47322c33ca03d8ddb5ad4c555bd820dd72484b3c59253dd9f41cc68dd63453ef04017407fbd081a549bc030d977079bb798b7
   languageName: node
   linkType: hard
 
@@ -10270,8 +10280,8 @@ __metadata:
   linkType: hard
 
 "protobufjs@npm:^7.0.0":
-  version: 7.3.0
-  resolution: "protobufjs@npm:7.3.0"
+  version: 7.3.2
+  resolution: "protobufjs@npm:7.3.2"
   dependencies:
     "@protobufjs/aspromise": "npm:^1.1.2"
     "@protobufjs/base64": "npm:^1.1.2"
@@ -10285,7 +10295,7 @@ __metadata:
     "@protobufjs/utf8": "npm:^1.1.0"
     "@types/node": "npm:>=13.7.0"
     long: "npm:^5.0.0"
-  checksum: 10c0/fdcd17a783a4d71dd46463419cdfb5a5e3ad07cf4d9460abb5bdeb2547b0fa77c55955ac26c38e5557f5169dc3909456c675a08c56268c0e79b34d348c05dcab
+  checksum: 10c0/b87e38fffc989793099010439a7ff45a0a57ef5b8f44b5209f06bfa5085ac96a365aa37eb3c79bd6954d6ef1b50fc69da37dae8ea2a31d90b7bc8fb2fa0e3955
   languageName: node
   linkType: hard
 
@@ -12061,7 +12071,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.4.0, tslib@npm:^2.6.1, tslib@npm:^2.6.2":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.3, tslib@npm:^2.6.2":
+  version: 2.6.3
+  resolution: "tslib@npm:2.6.3"
+  checksum: 10c0/2598aef53d9dbe711af75522464b2104724d6467b26a60f2bdac8297d2b5f1f6b86a71f61717384aa8fd897240467aaa7bcc36a0700a0faf751293d1331db39a
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.4.0, tslib@npm:^2.6.1":
   version: 2.6.2
   resolution: "tslib@npm:2.6.2"
   checksum: 10c0/e03a8a4271152c8b26604ed45535954c0a45296e32445b4b87f8a5abdb2421f40b59b4ca437c4346af0f28179780d604094eb64546bee2019d903d01c6c19bdb
@@ -12562,16 +12579,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webcrypto-core@npm:^1.7.9":
-  version: 1.7.9
-  resolution: "webcrypto-core@npm:1.7.9"
+"webcrypto-core@npm:^1.8.0":
+  version: 1.8.0
+  resolution: "webcrypto-core@npm:1.8.0"
   dependencies:
     "@peculiar/asn1-schema": "npm:^2.3.8"
     "@peculiar/json-schema": "npm:^1.1.12"
     asn1js: "npm:^3.0.1"
     pvtsutils: "npm:^1.3.5"
     tslib: "npm:^2.6.2"
-  checksum: 10c0/29075c0fd6afdd11473dcf98623b929fae6a0861a54725af109df824e3c55c00580103a2f934baabff52d588e9c6c3892db80346061fd835c55e0a83264c19f5
+  checksum: 10c0/d4158af402500eb26d0de6e088baa0fbef41c43a3e3b5f53b8326c8c517e55037b3d8a17672cf48bdccfd13526599857544ea8485e2172bb14c9ee4561d706a5
   languageName: node
   linkType: hard
 
@@ -12817,8 +12834,8 @@ __metadata:
   linkType: hard
 
 "ws@npm:^8.8.1":
-  version: 8.17.0
-  resolution: "ws@npm:8.17.0"
+  version: 8.17.1
+  resolution: "ws@npm:8.17.1"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -12827,7 +12844,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 10c0/55241ec93a66fdfc4bf4f8bc66c8eb038fda2c7a4ee8f6f157f2ca7dc7aa76aea0c0da0bf3adb2af390074a70a0e45456a2eaf80e581e630b75df10a64b0a990
+  checksum: 10c0/f4a49064afae4500be772abdc2211c8518f39e1c959640457dcee15d4488628620625c783902a52af2dd02f68558da2868fd06e6fd0e67ebcd09e6881b1b5bfe
   languageName: node
   linkType: hard
 

@@ -1,6 +1,5 @@
-import {HexBinary, Boolean} from "./types";
+import {Addr, HexBinary, Boolean} from "./types";
 export type Uint128 = string;
-export type Addr = string;
 export type AssetInfo = {
   token: {
     contract_addr: Addr;
@@ -27,6 +26,8 @@ export type ExecuteMsg = {
 } | {
   update_mapping_pair: UpdatePairMsg;
 } | {
+  delete_mapping_pair: DeletePairMsg;
+} | {
   bridge_to_ton: BridgeToTonMsg;
 } | {
   receive: Cw20ReceiveMsg;
@@ -49,6 +50,16 @@ export type ExecuteMsg = {
     token_fee_receiver?: Addr | null;
     validator_contract_addr?: Addr | null;
   };
+} | {
+  process_timeout_send_packet: {
+    masterchain_header_proof: HexBinary;
+    tx_boc: HexBinary;
+    tx_proof_unreceived: HexBinary;
+  };
+} | {
+  process_timeout_recieve_packet: {
+    receive_packet: HexBinary;
+  };
 };
 export type Binary = string;
 export interface UpdatePairMsg {
@@ -59,10 +70,15 @@ export interface UpdatePairMsg {
   opcode: HexBinary;
   remote_decimals: number;
 }
+export interface DeletePairMsg {
+  denom: string;
+  local_channel_id: string;
+}
 export interface BridgeToTonMsg {
   crc_src: number;
   denom: string;
   local_channel_id: string;
+  timeout?: number | null;
   to: string;
 }
 export interface Cw20ReceiveMsg {
@@ -90,16 +106,16 @@ export type QueryMsg = {
   channel_state_data: {
     channel_id: string;
   };
+} | {
+  token_fee: {
+    remote_token_denom: string;
+  };
+} | {
+  pair_mapping: {
+    key: string;
+  };
 };
-export interface MigrateMsg {
-  bridge_adapter: string;
-  relayer_fee?: Uint128 | null;
-  relayer_fee_receiver: Addr;
-  relayer_fee_token: AssetInfo;
-  swap_router_contract: string;
-  token_fee_receiver: Addr;
-  validator_contract_addr: Addr;
-}
+export interface MigrateMsg {}
 export type Amount = {
   native: Coin;
 } | {
@@ -128,3 +144,13 @@ export interface Config {
   validator_contract_addr: Addr;
 }
 export type String = string;
+export interface PairQuery {
+  key: string;
+  pair_mapping: MappingMetadata;
+}
+export interface MappingMetadata {
+  asset_info: AssetInfo;
+  asset_info_decimals: number;
+  opcode: [number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number];
+  remote_decimals: number;
+}
