@@ -36,3 +36,12 @@ packages/contract-state-simulate/public/
 coverage
 
 .nx/cache
+
+# Yarn 3 files
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
