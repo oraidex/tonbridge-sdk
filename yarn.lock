@@ -2309,7 +2309,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@oraichain/tonbridge-contracts-build@npm:^1.0.6, @oraichain/tonbridge-contracts-build@workspace:packages/contracts-build":
+"@oraichain/tonbridge-contracts-build@npm:^1.1.0, @oraichain/tonbridge-contracts-build@workspace:packages/contracts-build":
   version: 0.0.0-use.local
   resolution: "@oraichain/tonbridge-contracts-build@workspace:packages/contracts-build"
   languageName: unknown
@@ -2327,9 +2327,9 @@ __metadata:
     "@cosmjs/tendermint-rpc": "npm:0.31.3"
     "@oraichain/oraidex-common": "npm:latest"
     "@oraichain/oraidex-contracts-sdk": "npm:latest"
-    "@oraichain/tonbridge-contracts-build": "npm:^1.0.6"
+    "@oraichain/tonbridge-contracts-build": "npm:^1.1.0"
     "@oraichain/tonbridge-contracts-sdk": "npm:^1.0.2"
-    "@oraichain/tonbridge-utils": "npm:^1.0.0"
+    "@oraichain/tonbridge-utils": "npm:^1.1.0"
     "@orbs-network/ton-access": "npm:^2.3.3"
     "@ton/core": "npm:^0.56.3"
     "@ton/crypto": "npm:^3.2.0"
@@ -2347,7 +2347,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@oraichain/tonbridge-utils@npm:^1.0.0, @oraichain/tonbridge-utils@workspace:packages/tonbridge-utils":
+"@oraichain/tonbridge-utils@npm:^1.1.0, @oraichain/tonbridge-utils@workspace:packages/tonbridge-utils":
   version: 0.0.0-use.local
   resolution: "@oraichain/tonbridge-utils@workspace:packages/tonbridge-utils"
   dependencies:
