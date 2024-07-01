@@ -32,5 +32,6 @@
   },
   "resolutions": {
     "bech32": "1.1.4"
-  }
+  },
+  "gitHead": "5fac551a924d07732ca108191f0e3a3ab2296119"
 }
