@@ -1,0 +1,4 @@
+receive_packet_timeout#64060175 seq:(## 64) src_sender:MsgAddressInt 
+src_denom:MsgAddressExt src_channel_num:(## 16) amount:(## 128) timeout_timestamp:(## 64) = ReceivePacketTimeout;
+
+submit_to_ton_info#04E545F4 seq:(## 64) to:MsgAddressInt denom:MsgAddressInt amount:(## 128) crc_src:(## 32) timeout_timestamp:(## 64) = SubmitToTonInfo;

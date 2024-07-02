@@ -13,5 +13,8 @@
   "dependencies": {
     "@ton/core": "^0.56.3",
     "@ton/ton": "^13.11.1"
+  },
+  "devDependencies": {
+    "@ton-community/tlb-codegen": "^1.1.0"
   }
 }
