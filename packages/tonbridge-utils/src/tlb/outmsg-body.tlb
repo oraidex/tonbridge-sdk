@@ -10,12 +10,6 @@ orai_address#_ data:(bits 1023) = OraiAddress;
 msg_dest#_ inner_ref:^DestData = MsgDest;
 dest_data#_ dest_denom:^DestDenom dest_channel:^DestChannel dest_receiver:^DestReceiver orai_address:^OraiAddress = DestData;
 
-receive_packet_timeout#64060175 seq:(## 64) src_sender:MsgAddressInt 
-src_denom:MsgAddressExt src_channel_num:(## 16) amount:(## 128) timeout_timestamp:(## 64) = ReceivePacketTimeout;
-
-submit_to_ton_info#04E545F4 seq:(## 64) to:MsgAddressInt denom:MsgAddressInt amount:(## 128) 
-crc_src:# timeout_timestamp:(## 64) = SubmitToTonInfo;
-
 read_transacion_outmsg_body#540CE379 seq:(## 64) timeout_timestamp:(## 64) src_denom:MsgAddressInt 
 src_sender:MsgAddressInt src_channel_num:(## 16) amount:Grams msg_dest:^MsgDest = ReadTransactionOutMsgBody;
 
