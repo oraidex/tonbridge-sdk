@@ -26,7 +26,7 @@ export interface ReceivePacketTimeout {
     readonly timeout_timestamp: number;
 }
 
-// submit_to_ton_info#04E545F4 seq:(## 64) to:MsgAddressInt denom:MsgAddressInt amount:(## 128) crc_src:(## 32) timeout_timestamp:(## 64) = SubmitToTonInfo;
+// submit_to_ton_info#04E545F4 seq:(## 64) to:MsgAddressInt denom:MsgAddressInt amount:(## 128) crc_src:# timeout_timestamp:(## 64) = SubmitToTonInfo;
 
 export interface SubmitToTonInfo {
     readonly kind: 'SubmitToTonInfo';
@@ -79,7 +79,7 @@ export function storeReceivePacketTimeout(receivePacketTimeout: ReceivePacketTim
 
 }
 
-// submit_to_ton_info#04E545F4 seq:(## 64) to:MsgAddressInt denom:MsgAddressInt amount:(## 128) crc_src:(## 32) timeout_timestamp:(## 64) = SubmitToTonInfo;
+// submit_to_ton_info#04E545F4 seq:(## 64) to:MsgAddressInt denom:MsgAddressInt amount:(## 128) crc_src:# timeout_timestamp:(## 64) = SubmitToTonInfo;
 
 export function loadSubmitToTonInfo(slice: Slice): SubmitToTonInfo {
     if (((slice.remainingBits >= 32) && (slice.preloadUint(32) == 0x04E545F4))) {
