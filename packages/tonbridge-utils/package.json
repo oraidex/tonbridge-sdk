@@ -16,5 +16,6 @@
   },
   "devDependencies": {
     "@ton-community/tlb-codegen": "^1.1.0"
-  }
+  },
+  "gitHead": "a2b3a9fc3ef3e70d193876adeb6142fd128a2c0c"
 }
