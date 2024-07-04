@@ -32,10 +32,6 @@ export type ExecuteMsg = {
 } | {
   receive: Cw20ReceiveMsg;
 } | {
-  submit_bridge_to_ton_info: {
-    data: HexBinary;
-  };
-} | {
   update_owner: {
     new_owner: Addr;
   };
@@ -60,9 +56,15 @@ export type ExecuteMsg = {
   process_timeout_recieve_packet: {
     receive_packet: HexBinary;
   };
+} | {
+  acknowledgment: {
+    tx_boc: HexBinary;
+    tx_proof: HexBinary;
+  };
 };
 export type Binary = string;
 export interface UpdatePairMsg {
+  crc_src: number;
   denom: string;
   local_asset_info: AssetInfo;
   local_asset_info_decimals: number;
@@ -75,7 +77,6 @@ export interface DeletePairMsg {
   local_channel_id: string;
 }
 export interface BridgeToTonMsg {
-  crc_src: number;
   denom: string;
   local_channel_id: string;
   timeout?: number | null;
@@ -114,6 +115,8 @@ export type QueryMsg = {
   pair_mapping: {
     key: string;
   };
+} | {
+  query_timeout_receive_packets: {};
 };
 export interface MigrateMsg {}
 export type Amount = {
@@ -151,6 +154,17 @@ export interface PairQuery {
 export interface MappingMetadata {
   asset_info: AssetInfo;
   asset_info_decimals: number;
+  crc_src: number;
   opcode: [number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number];
   remote_decimals: number;
+}
+export type ArrayOfReceivePacket = ReceivePacket[];
+export interface ReceivePacket {
+  amount: Uint128;
+  magic: number;
+  seq: number;
+  src_channel: string;
+  src_denom: string;
+  src_sender: string;
+  timeout_timestamp: number;
 }
