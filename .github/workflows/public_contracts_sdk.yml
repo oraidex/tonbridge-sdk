@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Enable yarn4
+        run: corepack enable
+
       - name: Bump contracts-sdk version
         run: npx lerna version patch --no-push --yes --force-publish=contracts-sdk
 
