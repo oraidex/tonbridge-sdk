@@ -46,39 +46,21 @@ export type ExecuteMsg = {
     token_fee_receiver?: Addr | null;
     validator_contract_addr?: Addr | null;
   };
-} | {
-  process_timeout_send_packet: {
-    masterchain_header_proof: HexBinary;
-    tx_boc: HexBinary;
-    tx_proof_unreceived: HexBinary;
-  };
-} | {
-  process_timeout_recieve_packet: {
-    receive_packet: HexBinary;
-  };
-} | {
-  acknowledgment: {
-    tx_boc: HexBinary;
-    tx_proof: HexBinary;
-  };
 };
 export type Binary = string;
 export interface UpdatePairMsg {
-  crc_src: number;
   denom: string;
   local_asset_info: AssetInfo;
   local_asset_info_decimals: number;
-  local_channel_id: string;
   opcode: HexBinary;
   remote_decimals: number;
+  token_origin: number;
 }
 export interface DeletePairMsg {
   denom: string;
-  local_channel_id: string;
 }
 export interface BridgeToTonMsg {
   denom: string;
-  local_channel_id: string;
   timeout?: number | null;
   to: string;
 }
@@ -104,9 +86,7 @@ export type QueryMsg = {
     tx_hash: HexBinary;
   };
 } | {
-  channel_state_data: {
-    channel_id: string;
-  };
+  channel_state_data: {};
 } | {
   token_fee: {
     remote_token_denom: string;
@@ -116,13 +96,20 @@ export type QueryMsg = {
     key: string;
   };
 } | {
-  query_timeout_receive_packets: {};
+  send_packet_commitment: {
+    seq: number;
+  };
+} | {
+  ack_commitment: {
+    seq: number;
+  };
 };
 export interface MigrateMsg {}
+export type Uint256 = string;
 export type Amount = {
   native: Coin;
 } | {
-  cw20: Cw20CoinVerified;
+  cw20: Cw20Coin;
 };
 export interface ChannelResponse {
   balances: Amount[];
@@ -132,8 +119,8 @@ export interface Coin {
   amount: Uint128;
   denom: string;
 }
-export interface Cw20CoinVerified {
-  address: Addr;
+export interface Cw20Coin {
+  address: string;
   amount: Uint128;
 }
 export type RouterController = string;
@@ -154,17 +141,7 @@ export interface PairQuery {
 export interface MappingMetadata {
   asset_info: AssetInfo;
   asset_info_decimals: number;
-  crc_src: number;
   opcode: [number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number];
   remote_decimals: number;
-}
-export type ArrayOfReceivePacket = ReceivePacket[];
-export interface ReceivePacket {
-  amount: Uint128;
-  magic: number;
-  seq: number;
-  src_channel: string;
-  src_denom: string;
-  src_sender: string;
-  timeout_timestamp: number;
+  token_origin: number;
 }
