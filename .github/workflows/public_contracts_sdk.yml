@@ -36,7 +36,7 @@ jobs:
       - name: Publish contracts-sdk package
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx lerna publish from-package --yes --scope contracts-sdk
+        run: npx lerna publish from-package --scope contracts-sdk --yes
 
       - name: Bump contracts-build version
         run: npx lerna version patch --no-push --yes --force-publish=contracts-build
@@ -44,7 +44,7 @@ jobs:
       - name: Publish contract-build package
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx lerna publish from-package --yes --scope contracts-build
+        run: npx lerna publish from-package --scope contracts-build --yes
 
       - name: Push changes
         run: git push origin main --follow-tags
