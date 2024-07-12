@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -24,9 +26,6 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
-
-      - name: Enable yarn4
-        run: corepack enable
 
       - name: Bump contracts-sdk version
         run: npx lerna version patch --no-push --yes --force-publish=contracts-sdk
