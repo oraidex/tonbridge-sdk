@@ -3,7 +3,7 @@ name: Publish Contracts SDK
 on:
   push:
     tags:
-      - 'publish-*'
+      - "publish-*"
 
 jobs:
   publish:
@@ -16,8 +16,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18'
-          cache: 'yarn'
+          node-version: "18"
+          cache: "yarn"
 
       - name: Install Yarn
         run: npm install -g yarn@4.3.1
@@ -25,13 +25,21 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Bump version
+      - name: Bump contracts-sdk version
         run: npx lerna version patch --no-push --yes --force-publish=contracts-sdk
 
-      - name: Publish package
+      - name: Publish contracts-sdk package
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npx lerna publish from-package --yes --scope contracts-sdk
+
+      - name: Bump contracts-build version
+        run: npx lerna version patch --no-push --yes --force-publish=contracts-build
+
+      - name: Publish contract-build package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx lerna publish from-package --yes --scope contracts-build
 
       - name: Push changes
         run: |
