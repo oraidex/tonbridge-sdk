@@ -117,7 +117,7 @@ describe("Real shard block data tests", () => {
     await bridge.updateMappingPair({
       denom: "",
       localAssetInfo: { token: { contract_addr: dummyToken.contractAddress } },
-      localChannelId: "",
+      tokenOrigin: 529034805,
       localAssetInfoDecimals: 6,
       remoteDecimals: 6,
       opcode:

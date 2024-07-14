@@ -10,5 +10,9 @@
     "build": "tsc -p tsconfig.json"
   },
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "gitHead": "a2b3a9fc3ef3e70d193876adeb6142fd128a2c0c"
 }

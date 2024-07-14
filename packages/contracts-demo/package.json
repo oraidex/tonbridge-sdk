@@ -18,8 +18,6 @@
     "@cosmjs/tendermint-rpc": "0.31.3",
     "@oraichain/oraidex-common": "latest",
     "@oraichain/oraidex-contracts-sdk": "latest",
-    "@oraichain/tonbridge-contracts-build": "^1.2.5",
-    "@oraichain/tonbridge-contracts-sdk": "^1.2.5",
     "@oraichain/tonbridge-utils": "^1.2.5",
     "@orbs-network/ton-access": "^2.3.3",
     "@ton/core": "^0.56.3",
@@ -29,6 +27,10 @@
     "cosmjs-types": "0.8.0",
     "ton-lite-client": "^3.0.0",
     "tonweb": "^0.0.66"
+  },
+  "devDependencies": {
+    "@oraichain/tonbridge-contracts-build": "^1.2.5",
+    "@oraichain/tonbridge-contracts-sdk": "^1.2.5"
   },
   "resolutions": {
     "bech32": "1.1.4"

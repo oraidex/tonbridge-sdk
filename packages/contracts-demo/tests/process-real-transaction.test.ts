@@ -119,11 +119,11 @@ describe("Process real transaction tests", () => {
     await bridge.updateMappingPair({
       denom: "",
       localAssetInfo: { token: { contract_addr: dummyToken.contractAddress } },
-      localChannelId: "",
       localAssetInfoDecimals: 6,
       remoteDecimals: 6,
       opcode:
         "0000000000000000000000000000000000000000000000000000000000000001",
+      tokenOrigin: 529034805,
     });
   }, 100000);
 
