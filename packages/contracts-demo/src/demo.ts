@@ -16,7 +16,7 @@ import { TonbridgeValidatorClient } from "@oraichain/tonbridge-contracts-sdk";
     { gasPrice: GasPrice.fromString("0.001" + ORAI) }
   );
   const tonValidatorAddress =
-    "orai1qn93xycdlev4dp5mm5706vjwk7jm6y3jck3wvl3jwaxqn6vuh3xqrlrt84";
+    "orai16crw7g2rcvuga7vlnyxgwtdxtan46k8qqjjwhjqdjvjgk96n95es35q8vm";
   const validator = new TonbridgeValidatorClient(
     client,
     sender.address,
