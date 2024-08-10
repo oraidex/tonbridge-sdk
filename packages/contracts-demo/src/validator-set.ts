@@ -23,40 +23,37 @@ import { intToIP, parseBlock } from "./common";
         })
     )
   );
-  const engine: LiteEngine = new LiteRoundRobinEngine(engines);
+  const engine = new LiteRoundRobinEngine(engines);
   const client = new LiteClient({ engine });
-  console.log("get master info");
   const master = await client.getMasterchainInfo();
-  console.log("master", master);
-
-  // key block. Got this by querying a block, then deserialize it, then find prev_key_block_seqno
-  // it has to be a key block to include validator set & block extra to parse into the contract
-  let initBlockSeqno = master.last.seqno;
+  let blockInfo = master.last;
   while (true) {
-    const fullBlock = await client.getFullBlock(initBlockSeqno);
-    const initialBlockInformation = fullBlock.shards.find(
-      (blockRes) => blockRes.seqno === initBlockSeqno
-    );
     // get block
     const block = await engine.query(Functions.liteServer_getBlock, {
       kind: "liteServer.getBlock",
       id: {
         kind: "tonNode.blockIdExt",
-        ...initialBlockInformation,
+        ...blockInfo,
       },
     });
 
     const parsedBlock = await parseBlock(block);
     if (!parsedBlock.info.key_block) {
-      initBlockSeqno = parsedBlock.info.prev_key_block_seqno;
+      const keyBlockInfo = await client.getFullBlock(
+        parsedBlock.info.prev_key_block_seqno
+      );
+      blockInfo = {
+        kind: "tonNode.blockIdExt",
+        ...keyBlockInfo.shards.find(
+          (shard) => shard.seqno === parsedBlock.info.prev_key_block_seqno
+        ),
+      };
       continue;
     }
-    console.log("boc: ", block.data.toString("hex"));
-    console.log("parsed block: ", parsedBlock);
-    // const [rootCell] = await TonRocks.types.Cell.fromBoc(block.data.toString("hex"));
-    // const parsedBlockData: string[] = await buildValidatorsData(rootCell);
-    // console.dir(parsedBlockData[0]);
-    // console.log(parsedBlock.extra.custom.config.config.map.get("22")); // 34 in decimals. 34 is the index of validator set
+    console.log(
+      "parsed block: ",
+      parsedBlock.extra.custom.config.config.map.get("22")
+    );
     break;
   }
 

@@ -11,7 +11,7 @@ export function intToIP(int: number) {
 }
 
 export async function parseBlock(block: liteServer_BlockData): Promise<ParsedBlock> {
-  const [rootCell] = await TonRocks.types.Cell.fromBoc(block.data.toString("hex"));
+  const [rootCell] = await TonRocks.types.Cell.fromBoc(block.data);
 
   // Additional check for rootHash
   const rootHash = Buffer.from(rootCell.hashes[0]).toString("hex");
