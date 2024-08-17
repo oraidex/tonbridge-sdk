@@ -97,6 +97,7 @@ export const queryKeyBlock = async (
   }
 };
 
+// source: https://keygen.sh/blog/how-to-use-hexadecimal-ed25519-keys-in-node/
 export const pubkeyHexToEd25519DER = (publicKey: HexBinary) => {
   const key = Buffer.from(publicKey, "hex");
 
