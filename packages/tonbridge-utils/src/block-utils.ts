@@ -2,7 +2,11 @@
 
 import _ from "lodash";
 import { loadHashmap } from "./blockchain/BlockParser.js";
-import { loadBit, loadRefIfExist, loadUint16 } from "./blockchain/BlockUtils.js";
+import {
+  loadBit,
+  loadRefIfExist,
+  loadUint16,
+} from "./blockchain/BlockUtils.js";
 import TonRocks from "./index.js";
 
 export interface ISubTree {
@@ -16,7 +20,10 @@ interface TPrintTreeVolumeRet {
   parts: ISubTree[];
 }
 
-export const printTreeVolume = (root: TonRocks.types.Cell, parts: ISubTree[]): TPrintTreeVolumeRet => {
+export const printTreeVolume = (
+  root: TonRocks.types.Cell,
+  parts: ISubTree[]
+): TPrintTreeVolumeRet => {
   const { refs }: { refs: TonRocks.types.Cell[] } = root;
   // const parts: ISubTree[] = [];
 
@@ -42,7 +49,7 @@ export const printTreeVolume = (root: TonRocks.types.Cell, parts: ISubTree[]): T
           parts.push({
             root: refs[refIndex],
             parentCell: root,
-            refIndex
+            refIndex,
           });
         } else {
           volCurrent += vol;
@@ -97,7 +104,10 @@ export const checkBoc = async (boc: string): Promise<TonRocks.types.Cell> => {
   return cellsRoot;
 };
 
-export const cloneCell = (c: TonRocks.types.Cell, proof: boolean = true): TonRocks.types.Cell => {
+export const cloneCell = (
+  c: TonRocks.types.Cell,
+  proof: boolean = true
+): TonRocks.types.Cell => {
   // if ( c.isExotic ) {
   //   const type = c.bits.readUint8(0);
   //   if ( type == TonRocks.types.Cell.PrunnedBranchCell ) {
@@ -115,7 +125,10 @@ export const cloneCell = (c: TonRocks.types.Cell, proof: boolean = true): TonRoc
   // return c;
 };
 
-export const createPrunnedBranchCell = async (hash: Uint8Array, depth: number): Promise<TonRocks.types.Cell> => {
+export const createPrunnedBranchCell = async (
+  hash: Uint8Array,
+  depth: number
+): Promise<TonRocks.types.Cell> => {
   const cell = new TonRocks.types.Cell();
   cell.isExotic = true;
   cell.bits = new TonRocks.types.BitString(288);
@@ -156,7 +169,9 @@ export const buildProofExcept = async (
   return proof;
 };
 
-export const cloneTree = async (c: TonRocks.types.Cell): Promise<TonRocks.types.Cell> => {
+export const cloneTree = async (
+  c: TonRocks.types.Cell
+): Promise<TonRocks.types.Cell> => {
   const r = cloneCell(c);
   // console.log('clone:', Buffer.from(c.getHash()).toString('hex'));
 
@@ -168,7 +183,10 @@ export const cloneTree = async (c: TonRocks.types.Cell): Promise<TonRocks.types.
 };
 
 // block.extra.account_blocks.*
-export const buildPath = (hexHash: string, c: TonRocks.types.Cell): TonRocks.types.Cell[] | null => {
+export const buildPath = (
+  hexHash: string,
+  c: TonRocks.types.Cell
+): TonRocks.types.Cell[] | null => {
   const hash = Buffer.from(c.getHash()).toString("hex");
   if (hash == hexHash) {
     return [c];
@@ -208,7 +226,11 @@ export const buildProof = async (
       flag = hexHash1 == hexHash2;
     }
     if (flag) {
-      proof.refs[i] = await buildProof(path.slice(1), cloneTail, markCellsAsProof);
+      proof.refs[i] = await buildProof(
+        path.slice(1),
+        cloneTail,
+        markCellsAsProof
+      );
     } else {
       if (cloneTail && path.length == 1) {
         proof.refs[i] = await cloneTree(c);
@@ -245,9 +267,13 @@ export const printPath = (p: TonRocks.types.Cell[]): void => {
   // );
 };
 
-export const printTreeList = (root: TonRocks.types.Cell, prefix: string = ""): void => {
+export const printTreeList = (
+  root: TonRocks.types.Cell,
+  prefix: string = ""
+): void => {
   // console.log(root);
-  const cellToHexId = (c: TonRocks.types.Cell) => Buffer.from(c.getHash()).toString("hex");
+  const cellToHexId = (c: TonRocks.types.Cell) =>
+    Buffer.from(c.getHash()).toString("hex");
   const hexCurrentId = cellToHexId(root);
   const { refs } = root;
   // console.log(prefix, hexCurrentId, refs.length);
@@ -290,7 +316,9 @@ export const printTreeList = (root: TonRocks.types.Cell, prefix: string = ""): v
   ]
 */
 
-export const buildPathToConfig = (c: TonRocks.types.Cell): TonRocks.types.Cell[] | null => {
+export const buildPathToConfig = (
+  c: TonRocks.types.Cell
+): TonRocks.types.Cell[] | null => {
   const path: TonRocks.types.Cell[] = [];
   path.push(c);
 
@@ -405,7 +433,9 @@ export const buildPathToConfig = (c: TonRocks.types.Cell): TonRocks.types.Cell[]
   return path.concat(p);
 };
 
-export async function buildValidatorsData(root: TonRocks.types.Cell): Promise<string[]> {
+export async function buildValidatorsData(
+  root: TonRocks.types.Cell
+): Promise<string[]> {
   const proofParts: string[] = [];
 
   const p = buildPathToConfig(root);
@@ -425,7 +455,10 @@ export async function buildValidatorsData(root: TonRocks.types.Cell): Promise<st
 
   const parts: ISubTree[] = [];
   // TODO: make better
-  printTreeVolume(proof.refs[3].refs[3].refs[proof.refs[3].refs[3].refs.length - 1], parts);
+  printTreeVolume(
+    proof.refs[3].refs[3].refs[proof.refs[3].refs[3].refs.length - 1],
+    parts
+  );
   // console.log('parts:');
   // console.log(parts);
 
@@ -464,4 +497,36 @@ export async function buildValidatorsData(root: TonRocks.types.Cell): Promise<st
   proofParts.unshift(hexBoc);
 
   return proofParts;
+}
+
+// source: https://keygen.sh/blog/how-to-use-hexadecimal-ed25519-keys-in-node/
+export function pubkeyHexToEd25519DER(publicKey: string) {
+  const key = Buffer.from(publicKey, "hex");
+
+  // Ed25519's OID
+  const oid = Buffer.from([0x06, 0x03, 0x2b, 0x65, 0x70]);
+
+  // Create a byte sequence containing the OID and key
+  const elements = Buffer.concat([
+    Buffer.concat([
+      Buffer.from([0x30]), // Sequence tag
+      Buffer.from([oid.length]),
+      oid,
+    ]),
+    Buffer.concat([
+      Buffer.from([0x03]), // Bit tag
+      Buffer.from([key.length + 1]),
+      Buffer.from([0x00]), // Zero bit
+      key,
+    ]),
+  ]);
+
+  // Wrap up by creating a sequence of elements
+  const der = Buffer.concat([
+    Buffer.from([0x30]), // Sequence tag
+    Buffer.from([elements.length]),
+    elements,
+  ]);
+
+  return der;
 }

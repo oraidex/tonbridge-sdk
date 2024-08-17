@@ -12,8 +12,6 @@ import {
   TonbridgeValidatorClient,
 } from "@oraichain/tonbridge-contracts-sdk";
 import { ValidatorSignature } from "@oraichain/tonbridge-utils";
-import { Cell } from "@ton/core";
-import crypto from "crypto";
 import {
   LiteClient,
   LiteEngine,
@@ -25,7 +23,6 @@ import TonWeb from "tonweb";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { intToIP } from "../src/common";
 import {
-  pubkeyHexToEd25519DER,
   queryAllValidatorCandidates,
   queryAllValidators,
   queryKeyBlock,
@@ -173,71 +170,6 @@ describe("Real Ton data tests", () => {
       (validator) => validator.c_type !== 0
     );
     expect(validators.length).toEqual(0);
-  });
-
-  it("Verify a block using validator signatures in new block real data using typescript", async () => {
-    const blockHeader = await liteClient.getBlockHeader(masterchainInfo.last);
-    const blockHash = Cell.fromBoc(blockHeader.headerProof)[0].refs[0].hash(0);
-    expect(blockHash.toString("hex")).toEqual(
-      blockHeader.id.rootHash.toString("hex")
-    );
-
-    const tonweb = new TonWeb();
-    const valSignatures = (await tonweb.provider.send(
-      "getMasterchainBlockSignatures",
-      {
-        seqno: masterchainInfo.last.seqno,
-      }
-    )) as any;
-    const signatures = valSignatures.signatures as ValidatorSignature[];
-    const vdata = signatures.map((sig) => {
-      const signatureBuffer = Buffer.from(sig.signature, "base64");
-      const r = signatureBuffer.subarray(0, 32);
-      const s = signatureBuffer.subarray(32);
-      return {
-        node_id: Buffer.from(sig.node_id_short, "base64").toString("hex"),
-        r,
-        s,
-      };
-    });
-
-    const validators = (await queryAllValidators(validator))
-      .filter((validator) => validator.c_type !== 0)
-      .map((validator) => ({
-        ...validator,
-        node_id: validator.node_id,
-        pubkey: validator.pubkey,
-      }))
-      .sort((a, b) => b.weight - a.weight);
-
-    const sumLargestTotalWeights = validators
-      .slice(0, 100).map(val => val.weight)
-      .reduce((prev, cur) => prev + cur);
-
-    const message = Buffer.concat([
-      // magic prefix of message signing
-      Buffer.from([0x70, 0x6e, 0x0b, 0xc5]),
-      blockHash,
-      blockHeader.id.fileHash,
-    ]);
-
-    let totalWeight = 0;
-    for (const item of vdata) {
-      const validator = validators.find((val) => val.node_id === item.node_id);
-      if (!validator) continue;
-      const signature = Buffer.concat([item.r, item.s]);
-      const key = pubkeyHexToEd25519DER(validator.pubkey);
-      const verifyKey = crypto.createPublicKey({
-        format: "der",
-        type: "spki",
-        key,
-      });
-      const result = crypto.verify(null, message, verifyKey, signature);
-      expect(result).toEqual(true);
-      totalWeight += validator.weight;
-    }
-    expect(totalWeight).greaterThan(0);
-    expect(totalWeight * 3).toBeGreaterThanOrEqual(sumLargestTotalWeights * 2);
   });
 
   it("Verify a block using validator signatures in new block real data", async () => {
