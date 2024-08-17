@@ -102,16 +102,6 @@ async function verifyMasterchainBlock(
     }
   )) as any;
   const signatures = valSignatures.signatures as ValidatorSignature[];
-  const vdata = signatures.map((sig) => {
-    const signatureBuffer = Buffer.from(sig.signature, "base64");
-    const r = signatureBuffer.subarray(0, 32);
-    const s = signatureBuffer.subarray(32);
-    return {
-      node_id: sig.node_id_short,
-      r,
-      s,
-    };
-  });
 
   // sort and get the largest top 100 validator weights
   // this is because in TON, when validating a block, only at most 100 validators participated in a pool of 300+ validators
@@ -129,17 +119,23 @@ async function verifyMasterchainBlock(
   ]);
 
   let totalWeight = 0;
-  for (const item of vdata) {
-    const validator = validators.find((val) => val.node_id === item.node_id);
+  for (const item of signatures) {
+    const validator = validators.find(
+      (val) => val.node_id === item.node_id_short
+    );
     if (!validator) continue;
-    const signature = Buffer.concat([item.r, item.s]);
     const key = pubkeyHexToEd25519DER(validator.pubkey);
     const verifyKey = crypto.createPublicKey({
       format: "der",
       type: "spki",
       key,
     });
-    const result = crypto.verify(null, message, verifyKey, signature);
+    const result = crypto.verify(
+      null,
+      message,
+      verifyKey,
+      Buffer.from(item.signature, "base64")
+    );
     assert(result === true);
     totalWeight += validator.weight;
   }
