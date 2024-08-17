@@ -149,7 +149,6 @@ describe("Process real transaction tests", () => {
         {
           kind: "liteServer.getShardBlockProof",
           id: {
-            kind: "tonNode.blockIdExt",
             ...shardInfo.id,
           },
         }
