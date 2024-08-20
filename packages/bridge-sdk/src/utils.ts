@@ -1,33 +1,25 @@
-import { OfflineSigner } from "@cosmjs/proto-signing";
-import { ConfigKey, defaultConfig, Config } from "./config";
-import { Sender } from "@ton/ton";
-import { TonBridgeHandler } from "./BridgeHandler";
-import { GasPrice } from "@cosmjs/stargate";
+import { calculateTimeoutTimestamp } from "@oraichain/common";
+import {
+  TonbridgeBridgeClient,
+  TonbridgeBridgeInterface,
+} from "@oraichain/tonbridge-contracts-sdk";
 
-export async function createOraichainTonBridgeHandler(
-  tonSender: Sender,
-  cosmosSigner: OfflineSigner,
-  env: ConfigKey,
-  overrideConfig?: Config,
-  tonCenterApiKey?: string
+export function isTonbridgeBridgeClient(
+  obj: TonbridgeBridgeInterface
+): obj is TonbridgeBridgeClient {
+  return obj instanceof TonbridgeBridgeClient;
+}
+
+/**
+ * 
+ * @param timeout timeout difference from now to the timestamp you want in seconds. Eg: 3600
+ * @param dateNow current date timestamp in millisecs
+ * @returns timeout timestamps in seconds
+ */
+export function calculateTimeoutTimestampTon(
+  timeout: number,
+  dateNow?: number
 ) {
-  if (!tonSender.address) {
-    throw new Error("Ton sender must have an address");
-  }
-  const configEnv = { ...defaultConfig[env], ...overrideConfig };
-  return TonBridgeHandler.create({
-    wasmBridge: configEnv.wasmBridgeAddress,
-    tonBridge: configEnv.tonBridgeAddress,
-    tonSender: tonSender,
-    offlineSigner: cosmosSigner,
-    cosmosRpc: configEnv.rpcUrl,
-    tonClientParameters: {
-      endpoint: configEnv.tonCenterUrl,
-      apiKey: tonCenterApiKey
-    },
-    signingCosmwasmClientOpts: {
-      gasPrice: GasPrice.fromString("0.002orai"),
-      broadcastPollIntervalMs: 700
-    }
-  });
+  const timeoutNanoSec = calculateTimeoutTimestamp(timeout, dateNow);
+  return BigInt(timeoutNanoSec) / BigInt(Math.pow(10, 9));
 }

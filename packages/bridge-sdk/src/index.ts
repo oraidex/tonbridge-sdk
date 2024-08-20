@@ -1,1 +1,1 @@
-export * from "./BridgeHandler";
+export * from "./bridge-handler";
