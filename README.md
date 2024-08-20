@@ -3,19 +3,20 @@
 <p align="center" width="100%">
   <br />
    <a href="https://github.com/oraichain/tonbridge-sdk/blob/master/LICENSE"><img height="20" src="https://img.shields.io/badge/License-GNU%20GPL-blue.svg"></a>
-   <a href="https://www.npmjs.com/package/@oraichain/tonbridge-contracts-sdk"><img height="20" src="https://img.shields.io/github/package-json/v/oraichain/tonbridge-sdk?filename=packages%2Fcontracts-sdk%2Fpackage.json"></a>
+   <a href="https://www.npmjs.com/package/@oraichain/tonbridge-sdk"><img height="20" src="https://img.shields.io/github/package-json/v/oraichain/tonbridge-sdk?filename=packages%tonbridge-sdk%2Fpackage.json"></a>
 </p>
 
 :information_desk_person: This repository holds contains several useful packages for the TON Bridge with Oraichain and is managed by the [Oraichain Labs](https://orai.io/) team.
 
 ## 📦 Packages
 
-| Name                                                                                        | Description                                  |
-| ------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| [@oraichain/tonbridge-contracts-build](https://github.com/oraichain/tonbridge-sdk/tree/master/packages/contracts-build) | Storing production XRPL Bridge CW contract builds and a helper function to deploy them. |
-| [@oraichain/tonbridge-contracts-sdk](https://github.com/oraichain/tonbridge-sdk/tree/master/packages/contracts-sdk) | Storing production XRPL Bridge CW contract client and types in TypeScript to simplify contract interaction. |
-| [@oraichain/contracts-demo](https://github.com/oraichain/tonbridge-sdk/tree/master/packages/contracts-demo) | A package responsible for TON lite client verification scripts and end-to-end contract testing. |
-| [@oraichain/tonbridge-utils](https://github.com/oraichain/tonbridge-sdk/tree/master/packages/tonbridge-utils) | A utility package for parsing TON data. |
+| Name                                                                                                                    | Description                                                                                                 |
+| ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| [@oraichain/tonbridge-contracts-build](https://github.com/oraichain/tonbridge-sdk/tree/master/packages/contracts-build) | Storing production XRPL Bridge CW contract builds and a helper function to deploy them.                     |
+| [@oraichain/tonbridge-contracts-sdk](https://github.com/oraichain/tonbridge-sdk/tree/master/packages/contracts-sdk)     | Storing production XRPL Bridge CW contract client and types in TypeScript to simplify contract interaction. |
+| [@oraichain/contracts-demo](https://github.com/oraichain/tonbridge-sdk/tree/master/packages/contracts-demo)             | A package responsible for TON lite client verification scripts and end-to-end contract testing.             |
+| [@oraichain/tonbridge-utils](https://github.com/oraichain/tonbridge-sdk/tree/master/packages/tonbridge-utils)           | A utility package for parsing TON data.                                                                     |
+| [@oraichain/tonbridge-sdk](https://github.com/oraichain/tonbridge-sdk/tree/master/packages/bridge-sdk)                  | The main SDK that supports applications create TON bridge and TON universal swaps as easy as possible.      |
 
 ## 🛠 Developing
 

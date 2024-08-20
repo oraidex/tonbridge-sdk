@@ -23,7 +23,7 @@ export async function demo() {
   );
   const result = await handler.sendToTon(
     "UQB0PhtEaJYc94Yku1h7sRubS9Y_6Avdyx5sBuEfpEIb3G__",
-    7n,
+    2n,
     "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c"
   );
   console.log(result);
