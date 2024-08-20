@@ -1,15 +1,19 @@
-# tonbridge-sdk
+# TON Bridge SDK
 
-## Overview
+<p align="center" width="100%">
+  <br />
+   <a href="https://github.com/oraichain/tonbridge-sdk/blob/master/LICENSE"><img height="20" src="https://img.shields.io/badge/License-GNU%20GPL-blue.svg"></a>
+   <a href="https://www.npmjs.com/package/@oraichain/tonbridge-sdk"><img height="20" src="https://img.shields.io/github/package-json/v/oraichain/tonbridge-sdk?filename=packages%tonbridge-sdk%2Fpackage.json"></a>
+</p>
 
-This package is an SDK that helps developers integrate the TON Bridge into their favorite applications, enabling cross chain universal swaps for tokens between TON and other networks
+An SDK that helps developers integrate the TON Bridge into their favorite applications, enabling cross chain universal swaps for tokens between TON and other networks.
 
 ## Features
 
-- Cross-chain token bridge & swap from / to TON to / from Bitoin, EVM & Cosmos based networks.
-- Simple demos & tutorials on how to create cross-chain bridge & swap using `TonBridgeHandler`.
+- 🚀 Cross-chain token bridge & swap from / to TON to / from Bitoin, EVM & Cosmos based networks.
+- 🍰 Simple demos & tutorials on how to create cross-chain bridge & swap using `TonBridgeHandler`.
 
-## Quick start
+## Quick start ✈️
 
 ### Install dependencies
 
