@@ -75,6 +75,12 @@ yarn deploy
 yarn patch-package @cosmjs/cosmwasm-stargate
 ```
 
+### Add a dependency to a package
+
+```sh
+yarn workspace @oraichain/tonbridge-sdk add @oraichain/common-contracts-sdk
+```
+
 For publishing onto NPM, you will need an credential key. Hence, it's best to let the github workflow do the work.
 
 ## Credits
