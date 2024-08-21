@@ -29,12 +29,13 @@ yarn build
 
 ### Setup env
 
-Since we will be creating cross-chain transactions using the SDK, we need to import a wallet. For simplicity, we use `.env` file with the key: `DEMO_MNEMONIC`.
+Since we will be creating cross-chain transactions using the SDK, we need to import a wallet. For simplicity, we use `.env` file with the following keys: `DEMO_MNEMONIC_ORAI` & `DEMO_MNEMONIC_TON`.
 
 You need to create a `.env` file at the bridge-sdk/ directory with the content like this:
 
 ```sh
-DEMO_MNEMONIC=foo bar
+DEMO_MNEMONIC_ORAI=foo bar
+DEMO_MNEMONIC_TON=hello world
 ```
 
 ### Run the demos

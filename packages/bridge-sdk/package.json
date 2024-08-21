@@ -8,7 +8,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "build:test": "tsc --project tsconfig.json",
-    "orai-to-ton-demo": "tsx src/send-to-ton-demo.ts"
+    "orai-to-ton-demo": "tsx src/send-to-ton-demo.ts",
+    "ton-to-orai-demo": "tsx src/send-to-orai-demo.ts"
   },
   "license": "MIT",
   "dependencies": {

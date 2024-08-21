@@ -126,8 +126,9 @@ describe("test-bridge-handler", () => {
     });
   });
 
-  describe("test-bridge-handler-send-to-cosmos", () => {
-    it("test-send-to-cosmos", async () => {
+  // TODO: write test cases for sending to orai
+  describe("test-bridge-handler-send-to-orai", () => {
+    it("test-send-to-orai", async () => {
       expect(true).toEqual(false);
     });
   });
