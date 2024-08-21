@@ -1,20 +1,10 @@
 import {Addr, HexBinary, Boolean} from "./types";
-export type Uint128 = string;
-export type AssetInfo = {
-  token: {
-    contract_addr: Addr;
-  };
-} | {
-  native_token: {
-    denom: string;
-  };
-};
 export interface InstantiateMsg {
   bridge_adapter: string;
-  relayer_fee?: Uint128 | null;
+  osor_entrypoint_contract: Addr;
   relayer_fee_receiver: Addr;
-  relayer_fee_token: AssetInfo;
   swap_router_contract: string;
+  token_factory_addr?: Addr | null;
   token_fee_receiver: Addr;
   validator_contract_addr: Addr;
 }
@@ -38,21 +28,34 @@ export type ExecuteMsg = {
 } | {
   update_config: {
     bridge_adapter?: string | null;
-    relayer_fee?: Uint128 | null;
+    osor_entrypoint_contract?: Addr | null;
     relayer_fee_receiver?: Addr | null;
-    relayer_fee_token?: AssetInfo | null;
     swap_router_contract?: string | null;
+    token_factory_addr?: Addr | null;
     token_fee?: TokenFee[] | null;
     token_fee_receiver?: Addr | null;
     validator_contract_addr?: Addr | null;
   };
+} | {
+  register_denom: RegisterDenomMsg;
 };
+export type AssetInfo = {
+  token: {
+    contract_addr: Addr;
+  };
+} | {
+  native_token: {
+    denom: string;
+  };
+};
+export type Uint128 = string;
 export type Binary = string;
 export interface UpdatePairMsg {
   denom: string;
   local_asset_info: AssetInfo;
   local_asset_info_decimals: number;
   opcode: HexBinary;
+  relayer_fee: Uint128;
   remote_decimals: number;
   token_origin: number;
 }
@@ -76,6 +79,23 @@ export interface TokenFee {
 export interface Ratio {
   denominator: number;
   nominator: number;
+}
+export interface RegisterDenomMsg {
+  metadata?: Metadata | null;
+  subdenom: string;
+}
+export interface Metadata {
+  base?: string | null;
+  denom_units: DenomUnit[];
+  description?: string | null;
+  display?: string | null;
+  name?: string | null;
+  symbol?: string | null;
+}
+export interface DenomUnit {
+  aliases: string[];
+  denom: string;
+  exponent: number;
 }
 export type QueryMsg = {
   owner: {};
@@ -104,7 +124,15 @@ export type QueryMsg = {
     seq: number;
   };
 };
-export interface MigrateMsg {}
+export interface MigrateMsg {
+  bridge_adapter: string;
+  osor_entrypoint_contract: Addr;
+  relayer_fee_receiver: Addr;
+  swap_router_contract: string;
+  token_factory_addr?: Addr | null;
+  token_fee_receiver: Addr;
+  validator_contract_addr: Addr;
+}
 export type Uint256 = string;
 export type Amount = {
   native: Coin;
@@ -126,10 +154,10 @@ export interface Cw20Coin {
 export type RouterController = string;
 export interface Config {
   bridge_adapter: string;
-  relayer_fee: Uint128;
+  osor_entrypoint_contract: Addr;
   relayer_fee_receiver: Addr;
-  relayer_fee_token: AssetInfo;
   swap_router_contract: RouterController;
+  token_factory_addr?: Addr | null;
   token_fee_receiver: Addr;
   validator_contract_addr: Addr;
 }
@@ -142,6 +170,7 @@ export interface MappingMetadata {
   asset_info: AssetInfo;
   asset_info_decimals: number;
   opcode: [number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number, number];
+  relayer_fee?: Uint128 & string;
   remote_decimals: number;
   token_origin: number;
 }

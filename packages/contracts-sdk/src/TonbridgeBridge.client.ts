@@ -7,7 +7,7 @@
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
 import {Addr, HexBinary, Boolean} from "./types";
-import {Uint128, AssetInfo, InstantiateMsg, ExecuteMsg, Binary, UpdatePairMsg, DeletePairMsg, BridgeToTonMsg, Cw20ReceiveMsg, TokenFee, Ratio, QueryMsg, MigrateMsg, Uint256, Amount, ChannelResponse, Coin, Cw20Coin, RouterController, Config, String, PairQuery, MappingMetadata} from "./TonbridgeBridge.types";
+import {InstantiateMsg, ExecuteMsg, AssetInfo, Uint128, Binary, UpdatePairMsg, DeletePairMsg, BridgeToTonMsg, Cw20ReceiveMsg, TokenFee, Ratio, RegisterDenomMsg, Metadata, DenomUnit, QueryMsg, MigrateMsg, Uint256, Amount, ChannelResponse, Coin, Cw20Coin, RouterController, Config, String, PairQuery, MappingMetadata} from "./TonbridgeBridge.types";
 export interface TonbridgeBridgeReadOnlyInterface {
   contractAddress: string;
   owner: () => Promise<String>;
@@ -142,6 +142,7 @@ export interface TonbridgeBridgeInterface extends TonbridgeBridgeReadOnlyInterfa
     localAssetInfo,
     localAssetInfoDecimals,
     opcode,
+    relayerFee,
     remoteDecimals,
     tokenOrigin
   }: {
@@ -149,6 +150,7 @@ export interface TonbridgeBridgeInterface extends TonbridgeBridgeReadOnlyInterfa
     localAssetInfo: AssetInfo;
     localAssetInfoDecimals: number;
     opcode: HexBinary;
+    relayerFee: Uint128;
     remoteDecimals: number;
     tokenOrigin: number;
   }, _fee?: number | StdFee | "auto", _memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
@@ -182,22 +184,29 @@ export interface TonbridgeBridgeInterface extends TonbridgeBridgeReadOnlyInterfa
   }, _fee?: number | StdFee | "auto", _memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   updateConfig: ({
     bridgeAdapter,
-    relayerFee,
+    osorEntrypointContract,
     relayerFeeReceiver,
-    relayerFeeToken,
     swapRouterContract,
+    tokenFactoryAddr,
     tokenFee,
     tokenFeeReceiver,
     validatorContractAddr
   }: {
     bridgeAdapter?: string;
-    relayerFee?: Uint128;
+    osorEntrypointContract?: Addr;
     relayerFeeReceiver?: Addr;
-    relayerFeeToken?: AssetInfo;
     swapRouterContract?: string;
+    tokenFactoryAddr?: Addr;
     tokenFee?: TokenFee[];
     tokenFeeReceiver?: Addr;
     validatorContractAddr?: Addr;
+  }, _fee?: number | StdFee | "auto", _memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
+  registerDenom: ({
+    metadata,
+    subdenom
+  }: {
+    metadata?: Metadata;
+    subdenom: string;
   }, _fee?: number | StdFee | "auto", _memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
 }
 export class TonbridgeBridgeClient extends TonbridgeBridgeQueryClient implements TonbridgeBridgeInterface {
@@ -217,6 +226,7 @@ export class TonbridgeBridgeClient extends TonbridgeBridgeQueryClient implements
     this.receive = this.receive.bind(this);
     this.updateOwner = this.updateOwner.bind(this);
     this.updateConfig = this.updateConfig.bind(this);
+    this.registerDenom = this.registerDenom.bind(this);
   }
 
   readTransaction = async ({
@@ -238,6 +248,7 @@ export class TonbridgeBridgeClient extends TonbridgeBridgeQueryClient implements
     localAssetInfo,
     localAssetInfoDecimals,
     opcode,
+    relayerFee,
     remoteDecimals,
     tokenOrigin
   }: {
@@ -245,6 +256,7 @@ export class TonbridgeBridgeClient extends TonbridgeBridgeQueryClient implements
     localAssetInfo: AssetInfo;
     localAssetInfoDecimals: number;
     opcode: HexBinary;
+    relayerFee: Uint128;
     remoteDecimals: number;
     tokenOrigin: number;
   }, _fee: number | StdFee | "auto" = "auto", _memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
@@ -254,6 +266,7 @@ export class TonbridgeBridgeClient extends TonbridgeBridgeQueryClient implements
         local_asset_info: localAssetInfo,
         local_asset_info_decimals: localAssetInfoDecimals,
         opcode,
+        relayer_fee: relayerFee,
         remote_decimals: remoteDecimals,
         token_origin: tokenOrigin
       }
@@ -317,19 +330,19 @@ export class TonbridgeBridgeClient extends TonbridgeBridgeQueryClient implements
   };
   updateConfig = async ({
     bridgeAdapter,
-    relayerFee,
+    osorEntrypointContract,
     relayerFeeReceiver,
-    relayerFeeToken,
     swapRouterContract,
+    tokenFactoryAddr,
     tokenFee,
     tokenFeeReceiver,
     validatorContractAddr
   }: {
     bridgeAdapter?: string;
-    relayerFee?: Uint128;
+    osorEntrypointContract?: Addr;
     relayerFeeReceiver?: Addr;
-    relayerFeeToken?: AssetInfo;
     swapRouterContract?: string;
+    tokenFactoryAddr?: Addr;
     tokenFee?: TokenFee[];
     tokenFeeReceiver?: Addr;
     validatorContractAddr?: Addr;
@@ -337,13 +350,27 @@ export class TonbridgeBridgeClient extends TonbridgeBridgeQueryClient implements
     return await this.client.execute(this.sender, this.contractAddress, {
       update_config: {
         bridge_adapter: bridgeAdapter,
-        relayer_fee: relayerFee,
+        osor_entrypoint_contract: osorEntrypointContract,
         relayer_fee_receiver: relayerFeeReceiver,
-        relayer_fee_token: relayerFeeToken,
         swap_router_contract: swapRouterContract,
+        token_factory_addr: tokenFactoryAddr,
         token_fee: tokenFee,
         token_fee_receiver: tokenFeeReceiver,
         validator_contract_addr: validatorContractAddr
+      }
+    }, _fee, _memo, _funds);
+  };
+  registerDenom = async ({
+    metadata,
+    subdenom
+  }: {
+    metadata?: Metadata;
+    subdenom: string;
+  }, _fee: number | StdFee | "auto" = "auto", _memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      register_denom: {
+        metadata,
+        subdenom
       }
     }, _fee, _memo, _funds);
   };
