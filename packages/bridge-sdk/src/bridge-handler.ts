@@ -15,7 +15,7 @@ import {
   ValueOps,
 } from "@oraichain/ton-bridge-contracts";
 import {
-  TonbridgeBridgeInterface,
+  TonbridgeBridgeClient,
   TonbridgeBridgeTypes,
 } from "@oraichain/tonbridge-contracts-sdk";
 import { PairQuery } from "@oraichain/tonbridge-contracts-sdk/build/TonbridgeBridge.types";
@@ -23,11 +23,11 @@ import { Address, beginCell, OpenedContract, Sender, toNano } from "@ton/core";
 import { TonClient, TonClientParameters } from "@ton/ton";
 import * as packageJson from "../package.json";
 import { TonDenom } from "./types";
-import { calculateTimeoutTimestampTon, isTonbridgeBridgeClient } from "./utils";
+import { calculateTimeoutTimestampTon } from "./utils";
 
 export interface CreateTonBridgeHandlerParams {
   tonSender: Sender;
-  wasmBridge: TonbridgeBridgeInterface;
+  wasmBridge: TonbridgeBridgeClient;
   tonBridge?: string;
   tonClientParameters?: TonClientParameters;
   tonClient?: TonClient;
@@ -35,7 +35,7 @@ export interface CreateTonBridgeHandlerParams {
 
 export interface TonBridgeHandlerArgs {
   tonBridge: OpenedContract<BridgeAdapter>;
-  wasmBridge: TonbridgeBridgeInterface;
+  wasmBridge: TonbridgeBridgeClient;
   tonClient: TonClient;
   tonSender: Sender;
 }
@@ -45,7 +45,7 @@ export class TonBridgeHandler {
     private readonly tonBridge: OpenedContract<BridgeAdapter>,
     private tonClient: TonClient,
     private tonSender: Sender,
-    private wasmBridge: TonbridgeBridgeInterface
+    private wasmBridge: TonbridgeBridgeClient
   ) {}
 
   static async create(
@@ -122,7 +122,7 @@ export class TonBridgeHandler {
     this.tonSender = tonSender;
   }
 
-  async switchWasmBridge(wasmBridge: TonbridgeBridgeInterface) {
+  async switchWasmBridge(wasmBridge: TonbridgeBridgeClient) {
     this.wasmBridge = wasmBridge;
   }
 
@@ -257,11 +257,11 @@ export class TonBridgeHandler {
     localDenom: string,
     remoteDenom: string
   ): Promise<ExecuteResult> {
-    if (!isTonbridgeBridgeClient(this.wasmBridge))
+    if (!(this.wasmBridge as TonbridgeBridgeClient).client)
       throw new Error(
         "wasm bridge client is not an instance of TonbridgeBridgeClient"
       );
-    return this.wasmBridge.client.execute(
+    return (this.wasmBridge as TonbridgeBridgeClient).client.execute(
       this.wasmBridge.sender,
       localDenom,
       {
