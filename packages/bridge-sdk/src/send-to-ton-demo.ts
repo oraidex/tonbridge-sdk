@@ -1,6 +1,6 @@
 import { toAmount, TON_CHAIN_ID } from "@oraichain/common";
 import env from "dotenv";
-import { createOraichainTonBridgeHandler } from "./utils";
+import { createOraichainTonBridgeHandler, TON_ZERO_ADDRESS } from "./utils";
 env.config();
 
 export async function demo() {
@@ -10,7 +10,7 @@ export async function demo() {
   const result = await handler.sendToTon(
     "UQB0PhtEaJYc94Yku1h7sRubS9Y_6Avdyx5sBuEfpEIb3G__",
     toAmount(7, 9),
-    "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c"
+    TON_ZERO_ADDRESS
   );
   console.log(result);
 }

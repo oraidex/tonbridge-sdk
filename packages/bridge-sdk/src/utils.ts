@@ -90,3 +90,6 @@ export function calculateTimeoutTimestampTon(
   const timeoutNanoSec = calculateTimeoutTimestamp(timeout, dateNow);
   return BigInt(timeoutNanoSec) / BigInt(Math.pow(10, 9));
 }
+
+export const TON_ZERO_ADDRESS =
+  "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c";

@@ -42,7 +42,7 @@ export interface TonBridgeHandlerArgs {
 
 export class TonBridgeHandler {
   private constructor(
-    private readonly tonBridge: OpenedContract<BridgeAdapter>,
+    public readonly tonBridge: OpenedContract<BridgeAdapter>,
     private tonClient: TonClient,
     private tonSender: Sender,
     private wasmBridge: TonbridgeBridgeClient
@@ -131,14 +131,16 @@ export class TonBridgeHandler {
     amount: bigint,
     denom: TonDenom,
     opts: ValueOps,
-    timeoutTimestamp: bigint = BigInt(calculateTimeoutTimestamp(3600))
+    timeoutTimestamp: bigint = BigInt(calculateTimeoutTimestamp(3600)),
+    memo: string = ""
   ) {
     if (denom === TON_NATIVE) {
       return this._sendTonToCosmos(
         cosmosRecipient,
         amount,
         timeoutTimestamp,
-        opts
+        opts,
+        memo
       );
     }
     return this._sendJettonToCosmos(
@@ -146,7 +148,8 @@ export class TonBridgeHandler {
       amount,
       timeoutTimestamp,
       denom,
-      opts
+      opts,
+      memo
     );
   }
 
@@ -155,7 +158,8 @@ export class TonBridgeHandler {
     amount: bigint,
     timeout: bigint,
     denom: string,
-    opts: ValueOps
+    opts: ValueOps,
+    memo: string = ""
   ) {
     const jettonMinter = this.tonClient.open(
       JettonMinter.createFromAddress(Address.parse(denom))
@@ -176,7 +180,7 @@ export class TonBridgeHandler {
         jettonMaster: jettonMinter.address,
         timeout,
         // TODO: update memo for universal swap msg
-        memo: beginCell().endCell(),
+        memo: beginCell().storeStringRefTail(memo).endCell(),
       },
       opts
     );
@@ -186,14 +190,15 @@ export class TonBridgeHandler {
     cosmosRecipient: string,
     amount: bigint,
     timeout: bigint,
-    opts: ValueOps
+    opts: ValueOps,
+    memo: string = ""
   ) {
     await this.tonBridge.sendBridgeTon(
       this.tonSender,
       {
         amount,
         timeout: timeout,
-        memo: beginCell().endCell(),
+        memo: beginCell().storeStringRefTail(memo).endCell(),
         remoteReceiver: cosmosRecipient,
       },
       opts
