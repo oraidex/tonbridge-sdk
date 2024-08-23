@@ -9,8 +9,8 @@ env.config();
 
 export async function demo() {
   const handler = await createOraichainTonBridgeHandler(
-    TON_CHAIN_ID.TON_MAINNET
-    // { tonCenterUrl: "https://toncenter.com/api/v2/jsonRPC" }
+    TON_CHAIN_ID.TON_MAINNET,
+    { tonCenterUrl: "https://toncenter.com/api/v2/jsonRPC" }
   );
   const result = await handler.sendToCosmos(
     "orai1g4h64yjt0fvzv5v2j8tyfnpe5kmnetejvfgs7g",
