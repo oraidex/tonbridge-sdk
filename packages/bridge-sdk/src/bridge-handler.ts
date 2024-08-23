@@ -1,5 +1,5 @@
 import { ExecuteResult, toBinary } from "@cosmjs/cosmwasm-stargate";
-import { coins } from "@cosmjs/proto-signing";
+import { coins, EncodeObject } from "@cosmjs/proto-signing";
 import {
   calculateTimeoutTimestamp,
   DEFAULT_TON_CONFIG,
@@ -203,6 +203,15 @@ export class TonBridgeHandler {
       },
       opts
     );
+  }
+
+  buildSendToTonEncodeObjects(
+    tonRecipient: string,
+    amount: bigint,
+    tokenDenomOnTon: string,
+    timeoutTimestamp: bigint = BigInt(calculateTimeoutTimestampTon(3600))
+  ): EncodeObject[] {
+    throw new Error("Please implement buildSendToTonEncodeObjects");
   }
 
   async sendToTon(
