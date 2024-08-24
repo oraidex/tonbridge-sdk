@@ -1,4 +1,5 @@
-import { toAmount, TON_CHAIN_ID } from "@oraichain/common";
+import { TON_CHAIN_ID } from "@oraichain/common";
+import { toNano } from "@ton/ton";
 import env from "dotenv";
 import { createOraichainTonBridgeHandler, TON_ZERO_ADDRESS } from "./utils";
 env.config();
@@ -15,7 +16,7 @@ export async function demo() {
   console.log(tonReceiveAddress);
   const result = await handler.sendToTon(
     tonReceiveAddress,
-    toAmount(10, 9),
+    toNano(10),
     TON_ZERO_ADDRESS
   );
   console.log(result);

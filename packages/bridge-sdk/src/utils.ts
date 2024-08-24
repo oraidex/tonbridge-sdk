@@ -98,3 +98,4 @@ export function calculateTimeoutTimestampTon(
 
 export const TON_ZERO_ADDRESS =
   "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c";
+export const MIN_TON_FOR_EXECUTE = 20000001; // min ton for execute is 20000000, contract requires sent_funds > amount in body + MIN_TON_FOR_EXECUTE

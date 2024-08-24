@@ -1,4 +1,4 @@
-import { toAmount, TON_CHAIN_ID, TON_NATIVE } from "@oraichain/common";
+import { TON_CHAIN_ID, TON_NATIVE } from "@oraichain/common";
 import { toNano } from "@ton/ton";
 import env from "dotenv";
 import {
@@ -15,7 +15,7 @@ export async function demo() {
   );
   await handler.sendToCosmos(
     handler.wasmBridge.sender,
-    toAmount(3, 9),
+    toNano(3),
     TON_NATIVE,
     {
       queryId: 0,

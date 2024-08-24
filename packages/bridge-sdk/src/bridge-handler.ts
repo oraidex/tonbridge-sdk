@@ -23,7 +23,7 @@ import { Address, beginCell, OpenedContract, Sender, toNano } from "@ton/core";
 import { TonClient, TonClientParameters } from "@ton/ton";
 import * as packageJson from "../package.json";
 import { TonDenom } from "./types";
-import { calculateTimeoutTimestampTon } from "./utils";
+import { calculateTimeoutTimestampTon, MIN_TON_FOR_EXECUTE } from "./utils";
 
 export interface CreateTonBridgeHandlerParams {
   tonSender: Sender;
@@ -180,9 +180,9 @@ export class TonBridgeHandler {
         jettonMaster: jettonMinter.address,
         timeout,
         // TODO: update memo for universal swap msg
-        memo: beginCell().storeStringRefTail(memo).endCell(),
+        memo: beginCell().storeMaybeStringRefTail(memo).endCell(),
       },
-      opts
+      { ...opts, value: toNano(0) }
     );
   }
 
@@ -198,10 +198,11 @@ export class TonBridgeHandler {
       {
         amount,
         timeout,
-        memo: beginCell().storeStringRefTail(memo).endCell(),
+        memo: beginCell().storeMaybeStringRefTail(memo).endCell(),
         remoteReceiver: cosmosRecipient,
       },
-      opts
+      // amount here is similar to sent_funds in Cosmos ecosystem
+      { ...opts, value: amount + BigInt(MIN_TON_FOR_EXECUTE) } // MIN_TON_FOR_EXECUTE is the minimum fees required when bridging native TON
     );
   }
 
