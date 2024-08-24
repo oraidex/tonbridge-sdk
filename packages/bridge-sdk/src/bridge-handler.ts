@@ -44,8 +44,8 @@ export class TonBridgeHandler {
   private constructor(
     public readonly tonBridge: OpenedContract<BridgeAdapter>,
     private tonClient: TonClient,
-    private tonSender: Sender,
-    private wasmBridge: TonbridgeBridgeClient
+    public tonSender: Sender,
+    public wasmBridge: TonbridgeBridgeClient
   ) {}
 
   static async create(
@@ -170,7 +170,7 @@ export class TonBridgeHandler {
     const jettonWallet = this.tonClient.open(
       JettonWallet.createFromAddress(userJettonWalletAddress)
     );
-    await jettonWallet.sendTransfer(
+    return jettonWallet.sendTransfer(
       this.tonSender,
       {
         toAddress: this.tonBridge.address,
@@ -193,11 +193,11 @@ export class TonBridgeHandler {
     opts: ValueOps,
     memo: string = ""
   ) {
-    await this.tonBridge.sendBridgeTon(
+    return this.tonBridge.sendBridgeTon(
       this.tonSender,
       {
         amount,
-        timeout: timeout,
+        timeout,
         memo: beginCell().storeStringRefTail(memo).endCell(),
         remoteReceiver: cosmosRecipient,
       },

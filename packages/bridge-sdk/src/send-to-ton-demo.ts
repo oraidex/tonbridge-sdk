@@ -7,9 +7,15 @@ export async function demo() {
   const handler = await createOraichainTonBridgeHandler(
     TON_CHAIN_ID.TON_MAINNET
   );
+  // match with TonKeeper V5 address
+  const tonReceiveAddress = handler.tonSender.address.toString({
+    urlSafe: true,
+    bounceable: false,
+  });
+  console.log(tonReceiveAddress);
   const result = await handler.sendToTon(
-    "UQB0PhtEaJYc94Yku1h7sRubS9Y_6Avdyx5sBuEfpEIb3G__",
-    toAmount(7, 9),
+    tonReceiveAddress,
+    toAmount(10, 9),
     TON_ZERO_ADDRESS
   );
   console.log(result);

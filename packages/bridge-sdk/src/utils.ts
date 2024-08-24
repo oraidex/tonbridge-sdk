@@ -14,8 +14,8 @@ import {
   TonbridgeBridgeClient,
   TonbridgeBridgeInterface,
 } from "@oraichain/tonbridge-contracts-sdk";
-import { mnemonicToPrivateKey } from "@ton/crypto";
-import { TonClient, WalletContractV4 } from "@ton/ton";
+import { mnemonicToWalletKey } from "@ton/crypto";
+import { Sender, TonClient, WalletContractV5R1 } from "@ton/ton";
 import { TonBridgeHandler } from "./bridge-handler";
 
 export async function createOraichainTonBridgeHandler(
@@ -28,16 +28,21 @@ export async function createOraichainTonBridgeHandler(
   // init ton client
   const client = new TonClient({
     endpoint: configEnv.tonCenterUrl,
+    apiKey: tonCenterApiKey,
   });
   const oraiMnemonic = process.env.DEMO_MNEMONIC_ORAI;
   const tonMnemonic = process.env.DEMO_MNEMONIC_TON;
-  const keyPair = await mnemonicToPrivateKey(tonMnemonic.split(" "));
-  const wallet = WalletContractV4.create({
-    workchain: 0,
+  const keyPair = await mnemonicToWalletKey(tonMnemonic.split(" "));
+  const wallet = WalletContractV5R1.create({
+    workChain: 0,
     publicKey: keyPair.publicKey,
   });
+
   const contract = client.open(wallet);
-  const tonSender = contract.sender(keyPair.secretKey);
+  const tonSender: Sender = {
+    address: contract.address,
+    ...contract.sender(keyPair.secretKey),
+  };
 
   // init cosmos client
   const signer = await DirectSecp256k1HdWallet.fromMnemonic(oraiMnemonic, {
