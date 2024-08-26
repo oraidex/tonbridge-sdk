@@ -1,7 +1,7 @@
 import { DirectSecp256k1HdWallet, OfflineSigner } from "@cosmjs/proto-signing";
+import { COSMOS_CHAIN_IDS, OraiCommon } from "@oraichain/common";
 import {
   CosmosChainId,
-  cosmosTokens,
   CosmosWallet,
   generateError,
 } from "@oraichain/oraidex-common";
@@ -20,6 +20,11 @@ export class CosmosWalletImpl extends CosmosWallet {
     return accounts[0].address;
   }
   async createCosmosSigner(chainId: CosmosChainId): Promise<OfflineSigner> {
+    const { cosmosTokens } = (
+      await OraiCommon.initializeFromGitRaw({
+        chainIds: [COSMOS_CHAIN_IDS.ORAICHAIN],
+      })
+    ).tokenItems;
     const chainInfo = cosmosTokens.find((t) => t.chainId === chainId);
     if (!chainInfo)
       throw generateError(
