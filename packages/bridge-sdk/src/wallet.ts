@@ -60,12 +60,6 @@ export default class TonWallet {
         workchain?: number;
       };
       tonConnector?: TonConnectUI;
-    } = {
-      mnemonicData: {
-        mnemonic: process.env.WALLET_MNEMONIC?.split(" "),
-        tonWalletVersion: "V4",
-        workchain: MAIN_WORKCHAIN,
-      },
     }
   ) {
     const endpoint = await getHttpEndpoint({ network });
@@ -130,6 +124,7 @@ export default class TonWallet {
           workChain: workchain,
           publicKey,
         });
+        break;
       default:
         wallet = WalletContractV4.create({
           publicKey,
