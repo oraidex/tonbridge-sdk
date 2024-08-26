@@ -20,9 +20,6 @@ describe("test-ton-wallet", () => {
       );
       expect(tonWallet.sender.address).not.undefined;
       expect(tonWallet.sender.address?.toString()).toEqual(expectedTonAddress);
-      expect(tonWallet.walletContract.address.toString()).toEqual(
-        expectedTonAddress
-      );
     }
   );
 });

@@ -3,7 +3,6 @@ import { mnemonicToWalletKey } from "@ton/crypto";
 import {
   Address,
   beginCell,
-  OpenedContract,
   Sender,
   storeStateInit,
   TonClient,
@@ -19,10 +18,7 @@ dotenv.config();
 export default class TonWallet {
   private constructor(
     public readonly tonClient: TonClient,
-    public readonly sender: Sender,
-    public readonly walletContract: OpenedContract<
-      WalletContractV3R2 | WalletContractV4 | WalletContractV5R1
-    >
+    public readonly sender: Sender
   ) {}
 
   async waitSeqno(seqno: number) {
@@ -32,40 +28,61 @@ export default class TonWallet {
       await new Promise((resolve) =>
         setTimeout(resolve, SLEEP_TIME.WAIT_SEQNO)
       );
-      currentSeqno = await this.walletContract.getSeqno();
+      // TODO: is this the same as get seqno
+      const contractState = await this.tonClient.getContractState(
+        this.sender.address
+      );
+      currentSeqno = contractState.blockId.seqno;
     }
     console.log("transaction confirmed!");
   }
 
   static async createTonWallet(
-    tonWalletVersion: TonWalletVersion,
+    network: Network,
     {
-      mnemonic,
+      mnemonicData: { mnemonic, tonWalletVersion, workchain },
       tonConnector,
-    }: { mnemonic: string[]; tonConnector?: TonConnectUI } = {
-      mnemonic: process.env.WALLET_MNEMONIC?.split(" "),
-    },
-    { workchain, network }: { workchain: number; network: Network } = {
-      workchain: MAIN_WORKCHAIN,
-      network: "mainnet",
+    }: {
+      mnemonicData?: {
+        mnemonic: string[];
+        tonWalletVersion: TonWalletVersion;
+        workchain?: number;
+      };
+      tonConnector?: TonConnectUI;
+    } = {
+      mnemonicData: {
+        mnemonic: process.env.WALLET_MNEMONIC?.split(" "),
+        tonWalletVersion: "V4",
+        workchain: MAIN_WORKCHAIN,
+      },
     }
   ) {
     const endpoint = await getHttpEndpoint({ network });
     const client = new TonClient({ endpoint });
-    if (!mnemonic && tonConnector) {
+    if (!mnemonic && !tonConnector) {
       throw new Error(
         "Need at least mnemonic or TonConnector to initialize the TON Wallet"
       );
     }
     let tonSender: Sender;
     let tonPublicKey: Buffer;
-    let tonSecretKey: Buffer;
     if (mnemonic) {
       const { publicKey, secretKey } = await this.getWalletFromMnemonic(
         mnemonic
       );
       tonPublicKey = publicKey;
-      tonSecretKey = secretKey;
+      const wallet = this.createWalletContractFromPubKey(
+        tonWalletVersion,
+        tonPublicKey,
+        workchain,
+        network
+      );
+
+      const walletContract = client.open(wallet);
+      tonSender = {
+        address: walletContract.address,
+        ...walletContract.sender(secretKey),
+      };
     }
     // TODO: double check the sender & address returned by wallet connector
     if (tonConnector) {
@@ -76,35 +93,24 @@ export default class TonWallet {
       tonPublicKey = Buffer.from(account.publicKey, "base64");
     }
     if (!tonPublicKey) throw new Error("TON public key is null");
-    const wallet = this.createWalletContract(
-      tonWalletVersion,
-      tonPublicKey,
-      workchain
-    );
-
-    const walletContract = client.open(wallet);
-    if (tonSecretKey) {
-      tonSender = {
-        address: walletContract.address,
-        ...walletContract.sender(tonSecretKey),
-      };
-    }
-    return new TonWallet(client, tonSender, walletContract);
+    return new TonWallet(client, tonSender);
   }
 
-  private static createWalletContract(
+  private static createWalletContractFromPubKey(
     tonWalletVersion: TonWalletVersion,
     publicKey: Buffer,
-    workchain: number = MAIN_WORKCHAIN
+    workchain: number = MAIN_WORKCHAIN,
+    network: Network
   ) {
     let wallet: WalletContractV5R1 | WalletContractV4 | WalletContractV3R2 =
-      WalletContractV4.create({
+      WalletContractV3R2.create({
         publicKey,
         workchain,
       });
+    if (network === "testnet") return wallet;
     switch (tonWalletVersion) {
-      case "V3R2":
-        wallet = WalletContractV3R2.create({
+      case "V4":
+        wallet = WalletContractV4.create({
           publicKey,
           workchain,
         });
@@ -115,6 +121,10 @@ export default class TonWallet {
           publicKey,
         });
       default:
+        wallet = WalletContractV4.create({
+          publicKey,
+          workchain,
+        });
         break;
     }
     return wallet;

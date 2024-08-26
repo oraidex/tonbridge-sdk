@@ -5,6 +5,7 @@ import {
   CosmosWallet,
   generateError,
 } from "@oraichain/oraidex-common";
+import { Network } from "@orbs-network/ton-access";
 import { TonWalletVersion } from "./constants";
 import TonWallet from "./wallet";
 
@@ -41,10 +42,11 @@ export function initCosmosWallet(mnemonic: string) {
 
 export async function initTonWallet(
   mnemonic: string,
-  tonWalletVersion: TonWalletVersion
+  tonWalletVersion: TonWalletVersion,
+  network: Network = "mainnet"
 ) {
-  const tonWallet = await TonWallet.createTonWallet(tonWalletVersion, {
-    mnemonic: mnemonic.split(" "),
+  const tonWallet = await TonWallet.createTonWallet(network, {
+    mnemonicData: { mnemonic: mnemonic.split(" "), tonWalletVersion },
   });
   return tonWallet;
 }
