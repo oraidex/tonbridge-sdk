@@ -45,3 +45,41 @@ You can try running a demo script to bridge TON from Oraichain to TON:
 ```sh
 yarn workspace @oraichain/tonbridge-sdk orai-to-ton-demo
 ```
+
+## SDK deep dive
+
+### TON -> Cosmos
+
+```ts
+const handler = await createTonBridgeHandler(cosmosWallet, tonWallet, {
+  rpc: cosmosRpc,
+  chainId: COSMOS_CHAIN_IDS.ORAICHAIN,
+});
+```
+
+First, we initialize the `TonBridgeHandler` by calling the `createTonBridgeHandler` method. It takes several arguments:
+
+- `cosmosWallet`: an instance implementing the `CosmosWallet` interface from the `@oraichain/oraidex-common` package. This interface does not depend on the JavaScript runtime environment -> Browsers and Node.js applications can implement it easily. A simple Node.js implementation can be found [here](./src/demo-utils.ts)
+
+- `tonWallet`: an instance of the `TonWallet` class. You can use the static function `TonWallet.createTonWallet`
+
+Next, we simply create a `sendToCosmos` function to send TON tokens to Oraichain:
+
+```ts
+await handler.sendToCosmos(
+  handler.wasmBridge.sender,
+  toNano(3),
+  TON_NATIVE,
+  {
+    queryId: 0,
+    value: toNano(0), // dont care
+  },
+  calculateTimeoutTimestampTon(3600)
+);
+```
+
+you can replace `TON_NATIVE` with TON tokens that the protocol supports.
+
+### Cosmos -> TON
+
+For transactions bridging tokens from Cosmos chains -> TON, the SDK exposes a static helper function: `TonBridgeHandler.buildSendToTonEncodeObjects` that builds the bridge messages as `EncodeObject[]` so that these messages can be used in conjunction with other cosmos messages.

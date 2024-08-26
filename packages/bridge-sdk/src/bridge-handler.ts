@@ -83,6 +83,15 @@ export class TonBridgeHandler {
     );
   }
 
+  static buildSendToTonEncodeObjects(
+    tonRecipient: string,
+    amount: bigint,
+    tokenDenomOnTon: string,
+    timeoutTimestamp: bigint = BigInt(calculateTimeoutTimestampTon(3600))
+  ): EncodeObject[] {
+    throw new Error("Please implement buildSendToTonEncodeObjects");
+  }
+
   // // currently, TonBridge have only supported Oraichain
   // async switchCosmosWallet(
   //   offlineSigner: OfflineSigner,
@@ -205,15 +214,6 @@ export class TonBridgeHandler {
       // amount here is similar to sent_funds in Cosmos ecosystem
       { ...opts, value: amount + BigInt(MIN_TON_FOR_EXECUTE) } // MIN_TON_FOR_EXECUTE is the minimum fees required when bridging native TON
     );
-  }
-
-  buildSendToTonEncodeObjects(
-    tonRecipient: string,
-    amount: bigint,
-    tokenDenomOnTon: string,
-    timeoutTimestamp: bigint = BigInt(calculateTimeoutTimestampTon(3600))
-  ): EncodeObject[] {
-    throw new Error("Please implement buildSendToTonEncodeObjects");
   }
 
   async sendToTon(
