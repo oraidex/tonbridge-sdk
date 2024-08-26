@@ -15,6 +15,14 @@ import {
 import { TonBridgeHandler } from "./bridge-handler";
 import TonWallet from "./wallet";
 
+/**
+ *
+ * @param cosmosWallet
+ * @param tonWallet
+ * @param cosmosConfig config for the cosmos chain. the first address of the cosmos wallet signer will be used if cosmosSenderAddress is empty
+ * @param tonConfig
+ * @returns
+ */
 export async function createTonBridgeHandler(
   cosmosWallet: CosmosWallet,
   tonWallet: TonWallet,
@@ -22,6 +30,7 @@ export async function createTonBridgeHandler(
     rpc: string;
     chainId: CosmosChainId;
     gasPrice?: GasPrice;
+    cosmosSenderAddress?: string;
   },
   tonConfig?: {
     tonChainId?: TonChainId;
@@ -44,7 +53,7 @@ export async function createTonBridgeHandler(
   const accounts = await cosmosSigner.getAccounts();
   const wasmBridge = new TonbridgeBridgeClient(
     cosmwasmClient,
-    accounts[0].address,
+    cosmosConfig.cosmosSenderAddress ?? accounts[0].address,
     configEnv.wasmBridgeAddress
   );
 
