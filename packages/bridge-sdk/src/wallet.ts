@@ -13,26 +13,37 @@ import {
 import { TonConnectUI } from "@tonconnect/ui-react";
 import * as dotenv from "dotenv";
 import { MAIN_WORKCHAIN, SLEEP_TIME, TonWalletVersion } from "./constants";
+import { SupportedTonWalletType } from "./types";
 dotenv.config();
 
 export default class TonWallet {
-  private constructor(
+  public constructor(
     public readonly tonClient: TonClient,
-    public readonly sender: Sender
+    public readonly sender: Sender,
+    public readonly publicKey: Buffer
   ) {}
 
-  async waitSeqno(seqno: number) {
+  async waitSeqno(
+    seqno: number,
+    walletVersion: TonWalletVersion,
+    network: Network = "mainnet",
+    workchain = MAIN_WORKCHAIN
+  ) {
+    const walletContract = TonWallet.createWalletContractFromPubKey(
+      walletVersion,
+      this.publicKey,
+      workchain,
+      network
+    );
+    const contract = this.tonClient.open(walletContract);
     let currentSeqno = seqno;
     while (currentSeqno == seqno) {
       console.log("waiting for transaction to confirm...");
       await new Promise((resolve) =>
         setTimeout(resolve, SLEEP_TIME.WAIT_SEQNO)
       );
-      // TODO: is this the same as get seqno
-      const contractState = await this.tonClient.getContractState(
-        this.sender.address
-      );
-      currentSeqno = contractState.blockId.seqno;
+      const seqno = await contract.getSeqno();
+      currentSeqno = seqno;
     }
     console.log("transaction confirmed!");
   }
@@ -93,7 +104,7 @@ export default class TonWallet {
       tonPublicKey = Buffer.from(account.publicKey, "base64");
     }
     if (!tonPublicKey) throw new Error("TON public key is null");
-    return new TonWallet(client, tonSender);
+    return new TonWallet(client, tonSender, tonPublicKey);
   }
 
   private static createWalletContractFromPubKey(
@@ -101,12 +112,11 @@ export default class TonWallet {
     publicKey: Buffer,
     workchain: number = MAIN_WORKCHAIN,
     network: Network
-  ) {
-    let wallet: WalletContractV5R1 | WalletContractV4 | WalletContractV3R2 =
-      WalletContractV3R2.create({
-        publicKey,
-        workchain,
-      });
+  ): SupportedTonWalletType {
+    let wallet: SupportedTonWalletType = WalletContractV3R2.create({
+      publicKey,
+      workchain,
+    });
     if (network === "testnet") return wallet;
     switch (tonWalletVersion) {
       case "V4":
