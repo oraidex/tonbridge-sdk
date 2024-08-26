@@ -1,7 +1,7 @@
 import { TON_CHAIN_ID, TON_NATIVE } from "@oraichain/common";
 import { toNano } from "@ton/ton";
 import env from "dotenv";
-import { initCosmosWallet, initTonWallet } from "./demoUtils";
+import { initCosmosWallet, initTonWallet } from "./demo-utils";
 import {
   calculateTimeoutTimestampTon,
   createOraichainTonBridgeHandler,

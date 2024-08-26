@@ -3,11 +3,11 @@ import { fromBinary } from "@cosmjs/cosmwasm-stargate";
 import { COSMOS_CHAIN_IDS, DEFAULT_TON_CONFIG, ORAI } from "@oraichain/common";
 import { TonbridgeBridgeClient } from "@oraichain/tonbridge-contracts-sdk";
 import { mnemonicNew } from "@ton/crypto";
-import { Sender, TonClient } from "@ton/ton";
+import { Sender } from "@ton/ton";
 import { beforeAll, describe, expect, it } from "vitest";
 import * as packageJson from "../package.json";
 import { TonBridgeHandler } from "../src/bridge-handler";
-import { initTonWallet } from "../src/demoUtils";
+import { initTonWallet } from "../src/demo-utils";
 import { calculateTimeoutTimestampTon } from "../src/utils";
 import TonWallet from "../src/wallet";
 import {

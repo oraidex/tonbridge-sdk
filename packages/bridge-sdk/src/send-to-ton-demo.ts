@@ -2,7 +2,7 @@ import { TON_CHAIN_ID } from "@oraichain/common";
 import { toNano } from "@ton/ton";
 import env from "dotenv";
 import { TON_ZERO_ADDRESS } from "./constants";
-import { initCosmosWallet, initTonWallet } from "./demoUtils";
+import { initCosmosWallet, initTonWallet } from "./demo-utils";
 import { createOraichainTonBridgeHandler } from "./utils";
 env.config();
 

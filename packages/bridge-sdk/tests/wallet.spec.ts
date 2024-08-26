@@ -1,7 +1,7 @@
 import { mnemonicNew } from "@ton/crypto";
 import { describe, expect, it } from "vitest";
 import { TonWalletVersion } from "../src/constants";
-import { initTonWallet } from "../src/demoUtils";
+import { initTonWallet } from "../src/demo-utils";
 
 describe("test-ton-wallet", () => {
   // FIXME: fix the expected ton address cases
