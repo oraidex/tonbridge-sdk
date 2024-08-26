@@ -10,7 +10,7 @@ import {
   WalletContractV4,
   WalletContractV5R1,
 } from "@ton/ton";
-import { TonConnectUI } from "@tonconnect/ui-react";
+import { TonConnectUI } from "@tonconnect/ui";
 import * as dotenv from "dotenv";
 import { MAIN_WORKCHAIN, SLEEP_TIME, TonWalletVersion } from "./constants";
 import { SupportedTonWalletType } from "./types";
@@ -124,6 +124,8 @@ export default class TonWallet {
           workChain: workchain,
           publicKey,
         });
+        break;
+      case "V3R2":
         break;
       default:
         wallet = WalletContractV4.create({
