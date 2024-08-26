@@ -1,7 +1,16 @@
-import { Coin } from "@cosmjs/amino";
-import { fromBinary } from "@cosmjs/cosmwasm-stargate";
+import { Coin, coins } from "@cosmjs/amino";
+import {
+  ExecuteInstruction,
+  fromBinary,
+  toBinary,
+} from "@cosmjs/cosmwasm-stargate";
 import { COSMOS_CHAIN_IDS, DEFAULT_TON_CONFIG, ORAI } from "@oraichain/common";
-import { TonbridgeBridgeClient } from "@oraichain/tonbridge-contracts-sdk";
+import { Cw20BaseTypes } from "@oraichain/common-contracts-sdk";
+import { getEncodedExecuteContractMsgs } from "@oraichain/oraidex-common";
+import {
+  TonbridgeBridgeClient,
+  TonbridgeBridgeTypes,
+} from "@oraichain/tonbridge-contracts-sdk";
 import { mnemonicNew } from "@ton/crypto";
 import { Sender } from "@ton/ton";
 import { beforeAll, describe, expect, it } from "vitest";
@@ -75,6 +84,63 @@ describe("test-bridge-handler", () => {
       });
     });
 
+    it("test-buildSendToTonExecuteInstruction-ton-native", () => {
+      const recipient = "UQB0PhtEaJYc94Yku1h7sRubS9Y_6Avdyx5sBuEfpEIb3G__";
+      const amount = 100n;
+      const tokenDenomOnTon =
+        "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c";
+      const timestamp = calculateTimeoutTimestampTon(3600, now);
+      const localDenom = mockNativeTon;
+      const result = bridgeHandler.buildSendToTonExecuteInstruction(
+        recipient,
+        amount,
+        tokenDenomOnTon,
+        localDenom,
+        timestamp
+      );
+      expect(result).toMatchObject({
+        contractAddress: bridgeHandler.wasmBridge.contractAddress,
+        msg: {
+          bridge_to_ton: {
+            denom: tokenDenomOnTon,
+            timeout: Number(timestamp),
+            to: recipient,
+          },
+        } as TonbridgeBridgeTypes.ExecuteMsg,
+        funds: coins(amount.toString(), localDenom),
+      } as ExecuteInstruction);
+    });
+
+    it("test-buildSendToTonEncodeObjects-ton-native", async () => {
+      const recipient = "UQB0PhtEaJYc94Yku1h7sRubS9Y_6Avdyx5sBuEfpEIb3G__";
+      const amount = 100n;
+      const tokenDenomOnTon =
+        "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c";
+      const timestamp = calculateTimeoutTimestampTon(3600, now);
+      const localDenom = mockNativeTon;
+      const result = await bridgeHandler.buildSendToTonEncodeObjects(
+        recipient,
+        amount,
+        tokenDenomOnTon,
+        timestamp
+      );
+      expect(result).toMatchObject(
+        getEncodedExecuteContractMsgs(bridgeHandler.wasmBridge.sender, [
+          {
+            contractAddress: bridgeHandler.wasmBridge.contractAddress,
+            msg: {
+              bridge_to_ton: {
+                denom: tokenDenomOnTon,
+                timeout: Number(timestamp),
+                to: recipient,
+              },
+            } as TonbridgeBridgeTypes.ExecuteMsg,
+            funds: coins(amount.toString(), localDenom),
+          } as ExecuteInstruction,
+        ])
+      );
+    });
+
     it("test-send-to-ton-cw20", async () => {
       const recipient = "UQB0PhtEaJYc94Yku1h7sRubS9Y_6Avdyx5sBuEfpEIb3G__";
       const amount = 100n;
@@ -117,6 +183,72 @@ describe("test-bridge-handler", () => {
         memo: `TonBridgeHandler ${packageJson.version} sendCw20ToTon`,
         funds: undefined,
       });
+    });
+
+    it("test-buildSendToTonExecuteInstruction-ton-cw20", () => {
+      const recipient = "UQB0PhtEaJYc94Yku1h7sRubS9Y_6Avdyx5sBuEfpEIb3G__";
+      const amount = 100n;
+      const tokenDenomOnTon =
+        "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c";
+      const timestamp = calculateTimeoutTimestampTon(3600, now);
+      const localDenom = mockCw20Contract;
+      const result = bridgeHandler.buildSendToTonExecuteInstruction(
+        recipient,
+        amount,
+        tokenDenomOnTon,
+        localDenom,
+        timestamp
+      );
+      expect(result).toMatchObject({
+        contractAddress: localDenom,
+        msg: {
+          send: {
+            amount: amount.toString(),
+            contract: bridgeHandler.wasmBridge.contractAddress,
+            msg: toBinary({
+              bridge_to_ton: {
+                denom: tokenDenomOnTon,
+                timeout: Number(timestamp),
+                to: recipient,
+              },
+            } as TonbridgeBridgeTypes.ExecuteMsg),
+          },
+        } as Cw20BaseTypes.ExecuteMsg,
+      } as ExecuteInstruction);
+    });
+
+    it("test-buildSendToTonEncodeObjects-ton-cw20", async () => {
+      const recipient = "UQB0PhtEaJYc94Yku1h7sRubS9Y_6Avdyx5sBuEfpEIb3G__";
+      const amount = 100n;
+      const tokenDenomOnTon =
+        "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c-cw20";
+      const timestamp = calculateTimeoutTimestampTon(3600, now);
+      const result = await bridgeHandler.buildSendToTonEncodeObjects(
+        recipient,
+        amount,
+        tokenDenomOnTon,
+        timestamp
+      );
+      expect(result).toMatchObject(
+        getEncodedExecuteContractMsgs(bridgeHandler.wasmBridge.sender, [
+          {
+            contractAddress: mockCw20Contract,
+            msg: {
+              send: {
+                amount: amount.toString(),
+                contract: bridgeHandler.wasmBridge.contractAddress,
+                msg: toBinary({
+                  bridge_to_ton: {
+                    denom: tokenDenomOnTon,
+                    timeout: Number(timestamp),
+                    to: recipient,
+                  },
+                } as TonbridgeBridgeTypes.ExecuteMsg),
+              },
+            } as Cw20BaseTypes.ExecuteMsg,
+          } as ExecuteInstruction,
+        ])
+      );
     });
   });
 

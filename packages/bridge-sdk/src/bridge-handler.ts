@@ -1,5 +1,9 @@
-import { ExecuteResult, toBinary } from "@cosmjs/cosmwasm-stargate";
-import { coins, EncodeObject } from "@cosmjs/proto-signing";
+import {
+  ExecuteInstruction,
+  ExecuteResult,
+  toBinary,
+} from "@cosmjs/cosmwasm-stargate";
+import { coins } from "@cosmjs/proto-signing";
 import {
   calculateTimeoutTimestamp,
   DEFAULT_TON_CONFIG,
@@ -7,7 +11,10 @@ import {
   TON_NATIVE,
 } from "@oraichain/common";
 import { Cw20BaseTypes } from "@oraichain/common-contracts-sdk";
-import { parseAssetInfo } from "@oraichain/oraidex-common";
+import {
+  getEncodedExecuteContractMsgs,
+  parseAssetInfo,
+} from "@oraichain/oraidex-common";
 import {
   BridgeAdapter,
   JettonMinter,
@@ -83,47 +90,69 @@ export class TonBridgeHandler {
     );
   }
 
-  static buildSendToTonEncodeObjects(
+  buildSendToTonExecuteInstruction(
+    tonRecipient: string,
+    amount: bigint,
+    tokenDenomOnTon: string,
+    localDenom: string,
+    timeoutTimestamp: bigint = BigInt(calculateTimeoutTimestampTon(3600))
+  ) {
+    // cw20 case
+    if (!isNative(localDenom)) {
+      const executeInstruction: ExecuteInstruction = {
+        contractAddress: localDenom,
+        msg: {
+          send: {
+            amount: amount.toString(),
+            contract: this.wasmBridge.contractAddress,
+            msg: toBinary({
+              bridge_to_ton: {
+                denom: tokenDenomOnTon,
+                timeout: Number(timeoutTimestamp),
+                to: tonRecipient,
+              },
+            } as TonbridgeBridgeTypes.ExecuteMsg),
+          },
+        } as Cw20BaseTypes.ExecuteMsg,
+      };
+      return executeInstruction;
+    }
+    const executeInstruction: ExecuteInstruction = {
+      contractAddress: this.wasmBridge.contractAddress,
+      msg: {
+        bridge_to_ton: {
+          denom: tokenDenomOnTon,
+          timeout: Number(timeoutTimestamp),
+          to: tonRecipient,
+        },
+      } as TonbridgeBridgeTypes.ExecuteMsg,
+      funds: coins(amount.toString(), localDenom),
+    };
+    return executeInstruction;
+  }
+
+  async buildSendToTonEncodeObjects(
     tonRecipient: string,
     amount: bigint,
     tokenDenomOnTon: string,
     timeoutTimestamp: bigint = BigInt(calculateTimeoutTimestampTon(3600))
-  ): EncodeObject[] {
-    throw new Error("Please implement buildSendToTonEncodeObjects");
+  ) {
+    let pair: PairQuery;
+    try {
+      pair = await this.wasmBridge.pairMapping({ key: tokenDenomOnTon });
+    } catch (error) {
+      throw new Error("Pair mapping not found");
+    }
+    const localDenom = parseAssetInfo(pair.pair_mapping.asset_info);
+    const instruction = this.buildSendToTonExecuteInstruction(
+      tonRecipient,
+      amount,
+      tokenDenomOnTon,
+      localDenom,
+      timeoutTimestamp
+    );
+    return getEncodedExecuteContractMsgs(this.wasmBridge.sender, [instruction]);
   }
-
-  // // currently, TonBridge have only supported Oraichain
-  // async switchCosmosWallet(
-  //   offlineSigner: OfflineSigner,
-  //   gasPrice: GasPrice,
-  //   endpoint: string = "https://rpc.orai.io"
-  // ) {
-  //   this.cosmosSigner = offlineSigner;
-  //   const [sender, cosmosSignerClient] = await Promise.all([
-  //     offlineSigner.getAccounts()[0],
-  //     SigningCosmWasmClient.connectWithSigner(endpoint, offlineSigner, {
-  //       broadcastPollIntervalMs:
-  //         this.cosmosSignerClient.broadcastPollIntervalMs,
-  //       broadcastTimeoutMs: this.cosmosSignerClient.broadcastTimeoutMs,
-  //       gasPrice,
-  //     }),
-  //   ]);
-  //   this.cosmosSignerClient = cosmosSignerClient;
-  //   this.wasmBridge = new TonbridgeBridgeClient(
-  //     this.cosmosSignerClient,
-  //     sender,
-  //     this.wasmBridge.contractAddress
-  //   );
-  // }
-
-  // async switchCosmosAccount(offlineSigner: OfflineSigner) {
-  //   const sender = await offlineSigner.getAccounts()[0];
-  //   this.wasmBridge = new TonbridgeBridgeClient(
-  //     this.cosmosSignerClient,
-  //     sender,
-  //     this.wasmBridge.contractAddress
-  //   );
-  // }
 
   switchTonAccount(tonSender: Sender) {
     if (!tonSender.address) {
