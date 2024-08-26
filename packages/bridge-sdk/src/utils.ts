@@ -1,9 +1,9 @@
 import { GasPrice } from "@cosmjs/stargate";
 import {
   calculateTimeoutTimestamp,
-  COSMOS_CHAIN_IDS,
+  CosmosChainId,
   DEFAULT_TON_CONFIG,
-  OraiCommon,
+  TON_CHAIN_ID,
   TonChainId,
   TonConfig,
 } from "@oraichain/common";
@@ -15,28 +15,31 @@ import {
 import { TonBridgeHandler } from "./bridge-handler";
 import TonWallet from "./wallet";
 
-export async function createOraichainTonBridgeHandler(
-  tonChainId: TonChainId,
+export async function createTonBridgeHandler(
   cosmosWallet: CosmosWallet,
   tonWallet: TonWallet,
-  overrideConfig?: TonConfig,
-  tonCenterApiKey?: string
+  cosmosConfig: {
+    rpc: string;
+    chainId: CosmosChainId;
+    gasPrice?: GasPrice;
+  },
+  tonConfig?: {
+    tonChainId?: TonChainId;
+    overrideConfig?: TonConfig;
+    tonCenterApiKey?: string;
+  }
 ) {
-  const configEnv = { ...DEFAULT_TON_CONFIG[tonChainId], ...overrideConfig };
-
-  // init ton client
-  const rpc = (
-    await OraiCommon.initializeFromGitRaw({
-      chainIds: [COSMOS_CHAIN_IDS.ORAICHAIN],
-    })
-  ).chainInfos.cosmosChains[0].rpc;
+  const configEnv = {
+    ...DEFAULT_TON_CONFIG[tonConfig.tonChainId ?? TON_CHAIN_ID.TON_MAINNET],
+    ...tonConfig.overrideConfig,
+  };
   const { wallet: cosmosSigner, client: cosmwasmClient } =
     await cosmosWallet.getCosmWasmClient(
       {
-        rpc,
-        chainId: "Oraichain",
+        rpc: cosmosConfig.rpc,
+        chainId: cosmosConfig.chainId,
       },
-      { gasPrice: GasPrice.fromString("0.001orai") }
+      { gasPrice: cosmosConfig.gasPrice ?? GasPrice.fromString("0.001orai") }
     );
   const accounts = await cosmosSigner.getAccounts();
   const wasmBridge = new TonbridgeBridgeClient(
@@ -51,7 +54,7 @@ export async function createOraichainTonBridgeHandler(
     tonSender: tonWallet.sender,
     tonClientParameters: {
       endpoint: configEnv.tonCenterUrl,
-      apiKey: tonCenterApiKey,
+      apiKey: tonConfig.tonCenterApiKey,
     },
   });
 }
