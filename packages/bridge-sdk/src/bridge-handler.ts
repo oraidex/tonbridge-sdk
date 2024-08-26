@@ -22,8 +22,9 @@ import { PairQuery } from "@oraichain/tonbridge-contracts-sdk/build/TonbridgeBri
 import { Address, beginCell, OpenedContract, Sender, toNano } from "@ton/core";
 import { TonClient, TonClientParameters } from "@ton/ton";
 import * as packageJson from "../package.json";
+import { MIN_TON_FOR_EXECUTE } from "./constants";
 import { TonDenom } from "./types";
-import { calculateTimeoutTimestampTon, MIN_TON_FOR_EXECUTE } from "./utils";
+import { calculateTimeoutTimestampTon } from "./utils";
 
 export interface CreateTonBridgeHandlerParams {
   tonSender: Sender;

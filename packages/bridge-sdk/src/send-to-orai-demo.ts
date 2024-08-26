@@ -1,6 +1,7 @@
 import { TON_CHAIN_ID, TON_NATIVE } from "@oraichain/common";
 import { toNano } from "@ton/ton";
 import env from "dotenv";
+import { initCosmosWallet, initTonWallet } from "./demoUtils";
 import {
   calculateTimeoutTimestampTon,
   createOraichainTonBridgeHandler,
@@ -8,8 +9,14 @@ import {
 env.config();
 
 export async function demo() {
+  const oraiMnemonic = process.env.DEMO_MNEMONIC_ORAI;
+  const tonMnemonic = process.env.DEMO_MNEMONIC_TON;
+  const cosmosWallet = initCosmosWallet(oraiMnemonic);
+  const tonWallet = await initTonWallet(tonMnemonic, "V5R1");
   const handler = await createOraichainTonBridgeHandler(
-    TON_CHAIN_ID.TON_MAINNET
+    TON_CHAIN_ID.TON_MAINNET,
+    cosmosWallet,
+    tonWallet
     // { tonCenterUrl: "https://toncenter.com/api/v2/jsonRPC" },
     // process.env.TON_API_KEY
   );

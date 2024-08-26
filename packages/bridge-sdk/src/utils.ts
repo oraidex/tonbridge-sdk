@@ -1,64 +1,44 @@
-import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { GasPrice } from "@cosmjs/stargate";
 import {
   calculateTimeoutTimestamp,
   COSMOS_CHAIN_IDS,
   DEFAULT_TON_CONFIG,
-  ORAI,
   OraiCommon,
   TonChainId,
   TonConfig,
 } from "@oraichain/common";
+import { CosmosWallet } from "@oraichain/oraidex-common";
 import {
   TonbridgeBridgeClient,
   TonbridgeBridgeInterface,
 } from "@oraichain/tonbridge-contracts-sdk";
-import { mnemonicToWalletKey } from "@ton/crypto";
-import { Sender, TonClient, WalletContractV5R1 } from "@ton/ton";
 import { TonBridgeHandler } from "./bridge-handler";
+import TonWallet from "./wallet";
 
 export async function createOraichainTonBridgeHandler(
   tonChainId: TonChainId,
+  cosmosWallet: CosmosWallet,
+  tonWallet: TonWallet,
   overrideConfig?: TonConfig,
   tonCenterApiKey?: string
 ) {
   const configEnv = { ...DEFAULT_TON_CONFIG[tonChainId], ...overrideConfig };
 
   // init ton client
-  const client = new TonClient({
-    endpoint: configEnv.tonCenterUrl,
-    apiKey: tonCenterApiKey,
-  });
-  const oraiMnemonic = process.env.DEMO_MNEMONIC_ORAI;
-  const tonMnemonic = process.env.DEMO_MNEMONIC_TON;
-  const keyPair = await mnemonicToWalletKey(tonMnemonic.split(" "));
-  const wallet = WalletContractV5R1.create({
-    workChain: 0,
-    publicKey: keyPair.publicKey,
-  });
-
-  const contract = client.open(wallet);
-  const tonSender: Sender = {
-    address: contract.address,
-    ...contract.sender(keyPair.secretKey),
-  };
-
-  // init cosmos client
-  const signer = await DirectSecp256k1HdWallet.fromMnemonic(oraiMnemonic, {
-    prefix: ORAI,
-  });
-  const accounts = await signer.getAccounts();
   const rpc = (
     await OraiCommon.initializeFromGitRaw({
       chainIds: [COSMOS_CHAIN_IDS.ORAICHAIN],
     })
   ).chainInfos.cosmosChains[0].rpc;
-  const cosmwasmClient = await SigningCosmWasmClient.connectWithSigner(
-    rpc,
-    signer,
-    { gasPrice: GasPrice.fromString("0.001orai") }
-  );
+  const { wallet: cosmosSigner, client: cosmwasmClient } =
+    await cosmosWallet.getCosmWasmClient(
+      {
+        rpc,
+        chainId: "Oraichain",
+      },
+      { gasPrice: GasPrice.fromString("0.001orai") }
+    );
+  const accounts = await cosmosSigner.getAccounts();
   const wasmBridge = new TonbridgeBridgeClient(
     cosmwasmClient,
     accounts[0].address,
@@ -68,7 +48,7 @@ export async function createOraichainTonBridgeHandler(
   return TonBridgeHandler.create({
     wasmBridge,
     tonBridge: configEnv.tonBridgeAddress,
-    tonSender: tonSender,
+    tonSender: tonWallet.sender,
     tonClientParameters: {
       endpoint: configEnv.tonCenterUrl,
       apiKey: tonCenterApiKey,
@@ -95,7 +75,3 @@ export function calculateTimeoutTimestampTon(
   const timeoutNanoSec = calculateTimeoutTimestamp(timeout, dateNow);
   return BigInt(timeoutNanoSec) / BigInt(Math.pow(10, 9));
 }
-
-export const TON_ZERO_ADDRESS =
-  "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c";
-export const MIN_TON_FOR_EXECUTE = 20000001; // min ton for execute is 20000000, contract requires sent_funds > amount in body + MIN_TON_FOR_EXECUTE

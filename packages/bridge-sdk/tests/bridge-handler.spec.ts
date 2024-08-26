@@ -2,12 +2,14 @@ import { Coin } from "@cosmjs/amino";
 import { fromBinary } from "@cosmjs/cosmwasm-stargate";
 import { COSMOS_CHAIN_IDS, DEFAULT_TON_CONFIG, ORAI } from "@oraichain/common";
 import { TonbridgeBridgeClient } from "@oraichain/tonbridge-contracts-sdk";
-import { mnemonicNew, mnemonicToPrivateKey } from "@ton/crypto";
-import { Sender, TonClient, WalletContractV4 } from "@ton/ton";
+import { mnemonicNew } from "@ton/crypto";
+import { Sender, TonClient } from "@ton/ton";
 import { beforeAll, describe, expect, it } from "vitest";
 import * as packageJson from "../package.json";
 import { TonBridgeHandler } from "../src/bridge-handler";
+import { initTonWallet } from "../src/demoUtils";
 import { calculateTimeoutTimestampTon } from "../src/utils";
+import TonWallet from "../src/wallet";
 import {
   mockCw20Contract,
   mockNativeTon,
@@ -21,22 +23,14 @@ describe("test-bridge-handler", () => {
   let bridgeHandler: TonBridgeHandler;
   let wasmBridge: TonbridgeBridgeClient;
   let tonSender: Sender;
+  let tonWallet: TonWallet;
   const configEnv = DEFAULT_TON_CONFIG["ton"];
-  // init ton client
-  const client = new TonClient({
-    endpoint: configEnv.tonCenterUrl!,
-  });
   const now = new Date().getTime();
 
   beforeAll(async () => {
     let mnemonics = await mnemonicNew();
-    let keyPair = await mnemonicToPrivateKey(mnemonics);
-    const wallet = WalletContractV4.create({
-      workchain: 0,
-      publicKey: keyPair.publicKey,
-    });
-    const contract = client.open(wallet);
-    tonSender = contract.sender(keyPair.secretKey);
+    tonWallet = await initTonWallet(mnemonics.join(" "), "V5R1");
+    tonSender = tonWallet.sender;
   });
 
   describe("test-bridge-handler-send-to-ton", () => {
