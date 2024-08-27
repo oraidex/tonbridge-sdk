@@ -86,7 +86,7 @@ For publishing onto NPM, you will need an credential key. Hence, it's best to le
 
 ## Credits
 
-🛠 Built by Oraichain Labs — if you like our tools, please consider delegating to [OWallet validators ⚛️](https://owallet.dev/validators)
+🛠 Built by Oraichain Labs — if you like our tools, please consider delegating to [OWallet validators ⚛️](https://owallet.io/staking)
 
 ## 🪪 License
 
