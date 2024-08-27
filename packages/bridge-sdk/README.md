@@ -10,7 +10,7 @@ An SDK that helps developers integrate the TON Bridge into their favorite applic
 
 ## Features
 
-- 🚀 Cross-chain token bridge & swap from / to TON to / from Bitoin, EVM & Cosmos based networks.
+- 🚀 Cross-chain token bridge & swap from / to TON to / from Bitcoin, EVM & Cosmos based networks.
 - 🍰 Simple demos & tutorials on how to create cross-chain bridge & swap using `TonBridgeHandler`.
 
 ## Quick start ✈️
