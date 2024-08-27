@@ -40,10 +40,13 @@ DEMO_MNEMONIC_TON=hello world
 
 ### Run the demos
 
-You can try running a demo script to bridge TON from Oraichain to TON:
+You can try running a demo script to bridge TON from / to Oraichain to / from TON:
 
 ```sh
+# Oraichain to TON
 yarn workspace @oraichain/tonbridge-sdk orai-to-ton-demo
+# TON to Oraichain
+yarn workspace @oraichain/tonbridge-sdk ton-to-orai-demo
 ```
 
 ## SDK deep dive
@@ -154,3 +157,23 @@ buildSendToTonExecuteInstruction(
 }
 ```
 
+You can also simply call the `sendToTon` method if you simply want to bridge a supported token on Oraichain to TON:
+
+```ts
+const handler = await createTonBridgeHandler(cosmosWallet, tonWallet, {
+  rpc: cosmosRpc,
+  chainId: COSMOS_CHAIN_IDS.ORAICHAIN,
+});
+const tonReceiveAddress = handler.tonSender.address.toString({
+  urlSafe: true,
+  bounceable: false,
+});
+console.log(tonReceiveAddress);
+const result = await handler.sendToTon(
+  tonReceiveAddress,
+  toNano(3),
+  TON_ZERO_ADDRESS
+);
+```
+
+The `cosmosWallet` and `tonWallet` are initialized similarly to the [TON -> Cosmos section](#ton---cosmos).

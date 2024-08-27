@@ -32,6 +32,7 @@ export async function demo() {
     },
     calculateTimeoutTimestampTon(3600)
   );
+  console.log("finished")
 }
 
 demo();

@@ -23,7 +23,6 @@ export async function demo() {
     // { tonCenterUrl: "https://toncenter.com/api/v2/jsonRPC" },
     // process.env.TON_API_KEY
   );
-  // match with TonKeeper V5 address
   const tonReceiveAddress = handler.tonSender.address.toString({
     urlSafe: true,
     bounceable: false,
