@@ -31,7 +31,7 @@ export async function demo() {
   console.log(tonReceiveAddress);
   const result = await handler.sendToTon(
     tonReceiveAddress,
-    toNano(5),
+    toNano(3),
     TON_ZERO_ADDRESS
   );
   console.log(result);

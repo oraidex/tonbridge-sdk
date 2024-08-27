@@ -39,8 +39,8 @@ export async function createTonBridgeHandler(
   }
 ) {
   const configEnv = {
-    ...DEFAULT_TON_CONFIG[tonConfig.tonChainId ?? TON_CHAIN_ID.TON_MAINNET],
-    ...tonConfig.overrideConfig,
+    ...DEFAULT_TON_CONFIG[tonConfig?.tonChainId ?? TON_CHAIN_ID.TON_MAINNET],
+    ...tonConfig?.overrideConfig,
   };
   const { wallet: cosmosSigner, client: cosmwasmClient } =
     await cosmosWallet.getCosmWasmClient(
@@ -63,7 +63,7 @@ export async function createTonBridgeHandler(
     tonSender: tonWallet.sender,
     tonClientParameters: {
       endpoint: configEnv.tonCenterUrl,
-      apiKey: tonConfig.tonCenterApiKey,
+      apiKey: tonConfig?.tonCenterApiKey,
     },
   });
 }
