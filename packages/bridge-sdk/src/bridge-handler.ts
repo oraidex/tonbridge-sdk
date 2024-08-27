@@ -198,7 +198,7 @@ export class TonBridgeHandler {
     timeout: bigint,
     denom: string,
     opts: ValueOps,
-    memo: string = ""
+    memo: string = undefined
   ) {
     const jettonMinter = this.tonClient.open(
       JettonMinter.createFromAddress(Address.parse(denom))
@@ -219,7 +219,7 @@ export class TonBridgeHandler {
         jettonMaster: jettonMinter.address,
         timeout,
         // TODO: update memo for universal swap msg
-        memo: beginCell().storeStringRefTail(memo).endCell(),
+        memo: beginCell().storeMaybeStringRefTail(memo).endCell(),
       },
       { ...opts, value: toNano(0) }
     );
@@ -230,14 +230,14 @@ export class TonBridgeHandler {
     amount: bigint,
     timeout: bigint,
     opts: ValueOps,
-    memo: string = ""
+    memo: string = undefined
   ) {
     return this.tonBridge.sendBridgeTon(
       this.tonSender,
       {
         amount,
         timeout,
-        memo: beginCell().storeStringRefTail(memo).endCell(),
+        memo: beginCell().storeMaybeStringRefTail(memo).endCell(),
         remoteReceiver: cosmosRecipient,
       },
       // amount here is similar to sent_funds in Cosmos ecosystem
