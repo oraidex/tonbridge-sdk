@@ -51,6 +51,25 @@ yarn workspace @oraichain/tonbridge-sdk ton-to-orai-demo
 
 ## SDK deep dive
 
+### TonWallet
+
+`TonWallet` is a class that manages a TON Signer that is responsible for signing and submitting transactions. The signer can be initialized via mnemonic for Node.js apps or `TonConnect` for browser apps. The following function demonstrates how to initialize a TonWallet object for a Node.js app:
+
+```ts
+export async function initTonWallet(
+  mnemonic: string,
+  tonWalletVersion: TonWalletVersion,
+  network: Network = "mainnet"
+) {
+  const tonWallet = await TonWallet.create(network, {
+    mnemonicData: { mnemonic: mnemonic.split(" "), tonWalletVersion },
+  });
+  return tonWallet;
+}
+```
+
+where `TonWalletVersion` is one of `V3R2 | V4 | V5R1`, the network is either `mainnet` or `testnet`. If it's `testnet` -> the wallet version `V3R2` is automatically used.
+
 ### TON -> Cosmos
 
 ```ts
@@ -64,7 +83,7 @@ First, we initialize the `TonBridgeHandler` by calling the `createTonBridgeHandl
 
 - `cosmosWallet`: an instance implementing the `CosmosWallet` interface from the `@oraichain/oraidex-common` package. This interface does not depend on the JavaScript runtime environment -> Browsers and Node.js applications can implement it easily. A simple Node.js implementation can be found [here](./src/demo-utils.ts)
 
-- `tonWallet`: an instance of the `TonWallet` class. You can use the static function `TonWallet.createTonWallet`
+- `tonWallet`: an instance of the `TonWallet` class. For more information, take a look at the [TonWallet section](#tonwallet)
 
 Next, we simply create a `sendToCosmos` function to send TON tokens to Oraichain:
 

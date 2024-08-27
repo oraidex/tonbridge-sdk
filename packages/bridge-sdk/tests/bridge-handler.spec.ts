@@ -1,9 +1,5 @@
 import { Coin, coins } from "@cosmjs/amino";
-import {
-  ExecuteInstruction,
-  fromBinary,
-  toBinary,
-} from "@cosmjs/cosmwasm-stargate";
+import { ExecuteInstruction, toBinary } from "@cosmjs/cosmwasm-stargate";
 import { COSMOS_CHAIN_IDS, DEFAULT_TON_CONFIG, ORAI } from "@oraichain/common";
 import { Cw20BaseTypes } from "@oraichain/common-contracts-sdk";
 import { getEncodedExecuteContractMsgs } from "@oraichain/oraidex-common";
@@ -29,6 +25,9 @@ import {
 describe("test-bridge-handler", () => {
   const sender = "orai1g4h64yjt0fvzv5v2j8tyfnpe5kmnetejvfgs7g";
   const mockContract = "orai1g4h64yjt0fvzv5v2j8tyfnpe5kmnetejvfgs79";
+  const recipient = "UQB0PhtEaJYc94Yku1h7sRubS9Y_6Avdyx5sBuEfpEIb3G__";
+  const amount = 100n;
+  const tokenDenomOnTon = "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c";
   let bridgeHandler: TonBridgeHandler;
   let wasmBridge: TonbridgeBridgeClient;
   let tonSender: Sender;
@@ -61,10 +60,6 @@ describe("test-bridge-handler", () => {
     });
 
     it("test-send-to-ton-native", async () => {
-      const recipient = "UQB0PhtEaJYc94Yku1h7sRubS9Y_6Avdyx5sBuEfpEIb3G__";
-      const amount = 100n;
-      const tokenDenomOnTon =
-        "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c";
       const timestamp = calculateTimeoutTimestampTon(3600, now);
       const result = await bridgeHandler.sendToTon(
         recipient,
@@ -84,10 +79,6 @@ describe("test-bridge-handler", () => {
     });
 
     it("test-buildSendToTonExecuteInstruction-ton-native", () => {
-      const recipient = "UQB0PhtEaJYc94Yku1h7sRubS9Y_6Avdyx5sBuEfpEIb3G__";
-      const amount = 100n;
-      const tokenDenomOnTon =
-        "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c";
       const timestamp = calculateTimeoutTimestampTon(3600, now);
       const localDenom = mockNativeTon;
       const result = bridgeHandler.buildSendToTonExecuteInstruction(
@@ -111,10 +102,6 @@ describe("test-bridge-handler", () => {
     });
 
     it("test-buildSendToTonEncodeObjects-ton-native", async () => {
-      const recipient = "UQB0PhtEaJYc94Yku1h7sRubS9Y_6Avdyx5sBuEfpEIb3G__";
-      const amount = 100n;
-      const tokenDenomOnTon =
-        "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c";
       const timestamp = calculateTimeoutTimestampTon(3600, now);
       const localDenom = mockNativeTon;
       const result = await bridgeHandler.buildSendToTonEncodeObjects(
@@ -141,8 +128,6 @@ describe("test-bridge-handler", () => {
     });
 
     it("test-send-to-ton-cw20", async () => {
-      const recipient = "UQB0PhtEaJYc94Yku1h7sRubS9Y_6Avdyx5sBuEfpEIb3G__";
-      const amount = 100n;
       const tokenDenomOnTon =
         "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c-cw20";
       const timestamp = calculateTimeoutTimestampTon(3600, now);
@@ -152,20 +137,22 @@ describe("test-bridge-handler", () => {
         tokenDenomOnTon,
         timestamp
       );
-      const instruction = bridgeHandler.buildSendToTonExecuteInstruction(recipient, amount, tokenDenomOnTon, mockCw20Contract, timestamp);
+      const instruction = bridgeHandler.buildSendToTonExecuteInstruction(
+        recipient,
+        amount,
+        tokenDenomOnTon,
+        mockCw20Contract,
+        timestamp
+      );
       const expectedResult = {
         senderAddress: sender,
         instructions: [instruction],
-        memo: `TonBridgeHandler ${packageJson.version} sendCw20ToTon`
-      }
-      expect(expectedResult).toMatchObject(result)
+        memo: `TonBridgeHandler ${packageJson.version} sendCw20ToTon`,
+      };
+      expect(expectedResult).toMatchObject(result);
     });
 
     it("test-buildSendToTonExecuteInstruction-ton-cw20", () => {
-      const recipient = "UQB0PhtEaJYc94Yku1h7sRubS9Y_6Avdyx5sBuEfpEIb3G__";
-      const amount = 100n;
-      const tokenDenomOnTon =
-        "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c";
       const timestamp = calculateTimeoutTimestampTon(3600, now);
       const localDenom = mockCw20Contract;
       const result = bridgeHandler.buildSendToTonExecuteInstruction(
@@ -194,8 +181,6 @@ describe("test-bridge-handler", () => {
     });
 
     it("test-buildSendToTonEncodeObjects-ton-cw20", async () => {
-      const recipient = "UQB0PhtEaJYc94Yku1h7sRubS9Y_6Avdyx5sBuEfpEIb3G__";
-      const amount = 100n;
       const tokenDenomOnTon =
         "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c-cw20";
       const timestamp = calculateTimeoutTimestampTon(3600, now);
@@ -229,9 +214,9 @@ describe("test-bridge-handler", () => {
   });
 
   // TODO: write test cases for sending to orai
-  describe("test-bridge-handler-send-to-orai", () => {
-    it("test-send-to-orai", async () => {
-      expect(true).toEqual(false);
-    });
-  });
+  // describe("test-bridge-handler-send-to-orai", () => {
+  //   it("test-send-to-orai", async () => {
+  //     expect(true).toEqual(false);
+  //   });
+  // });
 });

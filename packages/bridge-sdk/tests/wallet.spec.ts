@@ -9,7 +9,7 @@ describe("test-ton-wallet", () => {
     ["V4", "UQDcC4b7Rcg1pFdE9i2NfLLdta1jVBbPtyk9KNOyo7v5AQxs"],
     ["V3R2", "UQADd9TWo7iV_gjHiZIn5Rd6pMCWH84W3xBXpYE7rFf2nbGM"],
   ])(
-    "test-createTonWallet-should-return-correct-address",
+    "test-TonWallet.create-should-return-correct-address",
     async (tonWalletVersion, expectedTonAddress) => {
       // MNEMONIC for TEST CASE ONLY. DO NOT USE!!!
       const mnemonic =

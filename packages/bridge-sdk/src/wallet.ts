@@ -48,7 +48,7 @@ export default class TonWallet {
     console.log("transaction confirmed!");
   }
 
-  static async createTonWallet(
+  static async create(
     network: Network,
     {
       mnemonicData: { mnemonic, tonWalletVersion, workchain },

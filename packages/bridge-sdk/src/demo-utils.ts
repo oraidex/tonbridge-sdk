@@ -50,7 +50,7 @@ export async function initTonWallet(
   tonWalletVersion: TonWalletVersion,
   network: Network = "mainnet"
 ) {
-  const tonWallet = await TonWallet.createTonWallet(network, {
+  const tonWallet = await TonWallet.create(network, {
     mnemonicData: { mnemonic: mnemonic.split(" "), tonWalletVersion },
   });
   return tonWallet;
