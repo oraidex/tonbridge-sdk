@@ -1,5 +1,6 @@
 import { Coin, StdFee } from "@cosmjs/amino";
 import {
+  ExecuteInstruction,
   ExecuteResult,
   JsonObject,
   SigningCosmWasmClient,
@@ -30,6 +31,18 @@ export class SimulateCosmWasmClientMock extends SimulateCosmWasmClient {
       msg,
       memo,
       funds,
+    } as any;
+  }
+  executeMultiple(
+    senderAddress: string,
+    instructions: readonly ExecuteInstruction[],
+    _fee: StdFee | "auto" | number,
+    memo?: string
+  ): Promise<ExecuteResult> {
+    return {
+      senderAddress,
+      instructions,
+      memo,
     } as any;
   }
 }

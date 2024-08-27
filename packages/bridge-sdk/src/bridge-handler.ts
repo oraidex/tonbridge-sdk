@@ -306,22 +306,17 @@ export class TonBridgeHandler {
       throw new Error(
         "wasm bridge client is not an instance of TonbridgeBridgeClient"
       );
-    return (this.wasmBridge as TonbridgeBridgeClient).client.execute(
-      this.wasmBridge.sender,
+    const instruction = this.buildSendToTonExecuteInstruction(
+      tonRecipient,
+      amount,
+      remoteDenom,
       localDenom,
-      {
-        send: {
-          amount: amount.toString(),
-          contract: this.wasmBridge.contractAddress,
-          msg: toBinary({
-            bridge_to_ton: {
-              denom: remoteDenom,
-              timeout: Number(timeout),
-              to: tonRecipient,
-            },
-          } as TonbridgeBridgeTypes.ExecuteMsg),
-        },
-      } as Cw20BaseTypes.ExecuteMsg,
+      timeout
+    );
+
+    return (this.wasmBridge as TonbridgeBridgeClient).client.executeMultiple(
+      this.wasmBridge.sender,
+      [instruction],
       "auto",
       `TonBridgeHandler ${packageJson.version} sendCw20ToTon`
     );

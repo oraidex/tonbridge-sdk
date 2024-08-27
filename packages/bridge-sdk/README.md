@@ -82,4 +82,75 @@ you can replace `TON_NATIVE` with TON tokens that the protocol supports.
 
 ### Cosmos -> TON
 
-For transactions bridging tokens from Cosmos chains -> TON, the SDK exposes a static helper function: `TonBridgeHandler.buildSendToTonEncodeObjects` that builds the bridge messages as `EncodeObject[]` so that these messages can be used in conjunction with other cosmos messages.
+For transactions bridging tokens from Cosmos chains -> TON, the SDK exposes a helper function: `TonBridgeHandler().buildSendToTonEncodeObjects` that builds the bridge messages as `EncodeObject[]` so that these messages can be used in conjunction with other cosmos messages.
+
+```ts
+async buildSendToTonEncodeObjects(
+    tonRecipient: string,
+    amount: bigint,
+    tokenDenomOnTon: string,
+    timeoutTimestamp: bigint = BigInt(calculateTimeoutTimestampTon(3600))
+  ) {
+  let pair: PairQuery;
+  try {
+    pair = await this.wasmBridge.pairMapping({ key: tokenDenomOnTon });
+  } catch (error) {
+    throw new Error("Pair mapping not found");
+  }
+  const localDenom = parseAssetInfo(pair.pair_mapping.asset_info);
+  const instruction = this.buildSendToTonExecuteInstruction(
+    tonRecipient,
+    amount,
+    tokenDenomOnTon,
+    localDenom,
+    timeoutTimestamp
+  );
+  return getEncodedExecuteContractMsgs(this.wasmBridge.sender, [instruction]);
+  }
+```
+
+if you prefer using multiple cosmwasm messages in the form of `ExecuteInstruction`, you can use the `buildSendToTonExecuteInstruction` helper function:
+
+```ts
+buildSendToTonExecuteInstruction(
+  tonRecipient: string,
+  amount: bigint,
+  tokenDenomOnTon: string,
+  localDenom: string,
+  timeoutTimestamp: bigint = BigInt(calculateTimeoutTimestampTon(3600))
+) {
+  // cw20 case
+  if (!isNative(localDenom)) {
+    const executeInstruction: ExecuteInstruction = {
+      contractAddress: localDenom,
+      msg: {
+        send: {
+          amount: amount.toString(),
+          contract: this.wasmBridge.contractAddress,
+          msg: toBinary({
+            bridge_to_ton: {
+              denom: tokenDenomOnTon,
+              timeout: Number(timeoutTimestamp),
+              to: tonRecipient,
+            },
+          } as TonbridgeBridgeTypes.ExecuteMsg),
+        },
+      } as Cw20BaseTypes.ExecuteMsg,
+    };
+    return executeInstruction;
+  }
+  const executeInstruction: ExecuteInstruction = {
+    contractAddress: this.wasmBridge.contractAddress,
+    msg: {
+      bridge_to_ton: {
+        denom: tokenDenomOnTon,
+        timeout: Number(timeoutTimestamp),
+        to: tonRecipient,
+      },
+    } as TonbridgeBridgeTypes.ExecuteMsg,
+    funds: coins(amount.toString(), localDenom),
+  };
+  return executeInstruction;
+}
+```
+

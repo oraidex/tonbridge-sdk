@@ -72,7 +72,6 @@ describe("test-bridge-handler", () => {
         tokenDenomOnTon,
         timestamp
       );
-      console.log(result);
       expect(result).toMatchObject({
         bridge_to_ton: {
           denom: tokenDenomOnTon,
@@ -125,7 +124,7 @@ describe("test-bridge-handler", () => {
         timestamp
       );
       expect(result).toMatchObject(
-        getEncodedExecuteContractMsgs(bridgeHandler.wasmBridge.sender, [
+        getEncodedExecuteContractMsgs(sender, [
           {
             contractAddress: bridgeHandler.wasmBridge.contractAddress,
             msg: {
@@ -153,36 +152,13 @@ describe("test-bridge-handler", () => {
         tokenDenomOnTon,
         timestamp
       );
-      const expectedMessage = {
-        bridge_to_ton: {
-          denom: tokenDenomOnTon,
-          timeout: Number(timestamp),
-          to: recipient,
-        },
-      };
+      const instruction = bridgeHandler.buildSendToTonExecuteInstruction(recipient, amount, tokenDenomOnTon, mockCw20Contract, timestamp);
       const expectedResult = {
-        ...result,
-        msg: {
-          send: {
-            amount: result.msg.send.amount,
-            contract: result.msg.send.contract,
-            msg: fromBinary(result.msg.send.msg),
-          },
-        },
-      };
-      expect(expectedResult).toMatchObject({
         senderAddress: sender,
-        contractAddress: mockCw20Contract,
-        msg: {
-          send: {
-            amount: amount.toString(),
-            contract: mockContract,
-            msg: expectedMessage,
-          },
-        },
-        memo: `TonBridgeHandler ${packageJson.version} sendCw20ToTon`,
-        funds: undefined,
-      });
+        instructions: [instruction],
+        memo: `TonBridgeHandler ${packageJson.version} sendCw20ToTon`
+      }
+      expect(expectedResult).toMatchObject(result)
     });
 
     it("test-buildSendToTonExecuteInstruction-ton-cw20", () => {
@@ -230,7 +206,7 @@ describe("test-bridge-handler", () => {
         timestamp
       );
       expect(result).toMatchObject(
-        getEncodedExecuteContractMsgs(bridgeHandler.wasmBridge.sender, [
+        getEncodedExecuteContractMsgs(sender, [
           {
             contractAddress: mockCw20Contract,
             msg: {
