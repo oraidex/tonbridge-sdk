@@ -25,12 +25,13 @@
     "@cosmjs/proto-signing": "0.31.3",
     "@cosmjs/stargate": "0.31.3",
     "@cosmjs/tendermint-rpc": "0.31.3",
+    "@oraichain/common": "^1.0.6",
     "buffer": "^6.0.3"
   },
   "devDependencies": {
     "@babel/traverse": "7.24.1",
     "@cosmjs/encoding": "0.31.3",
-    "@oraichain/cw-simulate": "^2.8.68",
+    "@oraichain/cw-simulate": "^2.8.98",
     "@swc/core": "^1.4.11",
     "@swc/jest": "^0.2.36",
     "@types/chai": "4.3.16",
