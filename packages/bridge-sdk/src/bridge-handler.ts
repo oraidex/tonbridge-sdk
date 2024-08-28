@@ -219,7 +219,7 @@ export class TonBridgeHandler {
         jettonMaster: jettonMinter.address,
         timeout,
         // TODO: update memo for universal swap msg
-        memo: beginCell().storeMaybeStringRefTail(memo).endCell(),
+        memo: beginCell().storeStringRefTail(memo).endCell(),
       },
       { ...opts, value: toNano(0) }
     );
@@ -237,7 +237,7 @@ export class TonBridgeHandler {
       {
         amount,
         timeout,
-        memo: beginCell().storeMaybeStringRefTail(memo).endCell(),
+        memo: beginCell().storeStringRefTail(memo).endCell(),
         remoteReceiver: cosmosRecipient,
       },
       // amount here is similar to sent_funds in Cosmos ecosystem
