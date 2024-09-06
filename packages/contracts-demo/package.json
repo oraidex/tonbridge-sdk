@@ -1,6 +1,6 @@
 {
   "name": "@oraichain/tonbridge-contracts-demo",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "main": "build/index.js",
   "files": [
     "build/"
@@ -18,7 +18,7 @@
     "@cosmjs/tendermint-rpc": "0.31.3",
     "@oraichain/oraidex-common": "latest",
     "@oraichain/oraidex-contracts-sdk": "latest",
-    "@oraichain/tonbridge-utils": "^1.3.4",
+    "@oraichain/tonbridge-utils": "^1.3.5",
     "@orbs-network/ton-access": "^2.3.3",
     "@ton/core": "^0.56.3",
     "@ton/crypto": "^3.2.0",
@@ -29,8 +29,8 @@
     "tonweb": "^0.0.66"
   },
   "devDependencies": {
-    "@oraichain/tonbridge-contracts-build": "^1.3.4",
-    "@oraichain/tonbridge-contracts-sdk": "^1.3.4"
+    "@oraichain/tonbridge-contracts-build": "^1.3.5",
+    "@oraichain/tonbridge-contracts-sdk": "^1.3.5"
   },
   "resolutions": {
     "bech32": "1.1.4"
