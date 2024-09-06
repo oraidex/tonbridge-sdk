@@ -32,36 +32,25 @@ jobs:
 
       - name: Authenticate with private NPM package
         run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
-      # - name: Publish contracts-build
-      #   id: publish-contracts-build
-      #   continue-on-error: true
-      #   run: yarn publish --access public packages/contracts-build
+
+      - name: Publish
+        run: lerna publish
+
+      # - name: Bump contracts-sdk version
+      #   run: npx lerna version patch --no-push --yes --force-publish=contracts-sdk
+
+      # - name: Publish contracts-sdk package
       #   env:
-      #     CI: false
-      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      # - name: Publish contracts-sdk
-      #   id: publish-contracts-sdk
-      #   continue-on-error: true
-      #   run: yarn publish --access public packages/contracts-sdk
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   run: npx lerna publish from-package --scope packages/contracts-sdk --yes
+
+      # - name: Bump contracts-build version
+      #   run: npx lerna version patch --no-push --yes --force-publish=contracts-build
+
+      # - name: Publish contract-build package
       #   env:
-      #     CI: false
-      #     NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Bump contracts-sdk version
-        run: npx lerna version patch --no-push --yes --force-publish=contracts-sdk
-
-      - name: Publish contracts-sdk package
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx lerna publish from-package --scope packages/contracts-sdk --yes
-
-      - name: Bump contracts-build version
-        run: npx lerna version patch --no-push --yes --force-publish=contracts-build
-
-      - name: Publish contract-build package
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx lerna publish from-package --scope packages/contracts-build --yes
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   run: npx lerna publish from-package --scope packages/contracts-build --yes
 
       - name: Push changes
         run: git push origin main --follow-tags
