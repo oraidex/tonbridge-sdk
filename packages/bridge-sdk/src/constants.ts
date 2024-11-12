@@ -1,6 +1,6 @@
 export const TON_ZERO_ADDRESS =
   "EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c";
-export const MIN_TON_FOR_EXECUTE = 20000001; // min ton for execute is 20000000, contract requires sent_funds > amount in body + MIN_TON_FOR_EXECUTE
+export const MIN_TON_FOR_EXECUTE = 50000001; // min ton for execute is 20000000, contract requires sent_funds > amount in body + MIN_TON_FOR_EXECUTE
 
 export const SLEEP_TIME = {
   WAIT_SEQNO: 2000,
