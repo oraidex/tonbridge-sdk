@@ -241,7 +241,7 @@ export class TonBridgeHandler {
         remoteReceiver: cosmosRecipient,
       },
       // amount here is similar to sent_funds in Cosmos ecosystem
-      { value: amount + BigInt(MIN_TON_FOR_EXECUTE), ...opts } // MIN_TON_FOR_EXECUTE is the minimum fees required when bridging native TON
+      { ...opts, value: amount + BigInt(MIN_TON_FOR_EXECUTE) } // MIN_TON_FOR_EXECUTE is the minimum fees required when bridging native TON
     );
   }
 
