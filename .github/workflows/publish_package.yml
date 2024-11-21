@@ -1,0 +1,45 @@
+name: publish_package
+
+on:
+  push:
+    branches: [main]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18.19.1"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Add github info
+        run: |
+          git config --global user.email "github@orai.io"
+          git config --global user.name "github"
+
+      - name: Authenticate with private NPM package
+        run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
+      - name: Bump contracts-sdk version
+        run: npx lerna version patch --no-push --yes --force-publish=bridge-sdk
+
+      - name: Build
+        run: yarn build
+
+      - name: Publish
+        run: lerna publish from-package --yes
+
+      - name: Push changes
+        run: git push origin main --follow-tags
